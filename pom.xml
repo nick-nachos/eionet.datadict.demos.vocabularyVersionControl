@@ -12,7 +12,7 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <env>local</env>
+        <env>unittest</env>
         <liquibase.version>3.4.2</liquibase.version>
     </properties>
 
