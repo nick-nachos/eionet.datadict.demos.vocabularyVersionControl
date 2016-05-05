@@ -4,4 +4,261 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
     
+    <changeSet id="rev-1" author="nakasnik">
+        
+        <sql>
+            create table Vocabulary (
+                Id bigint auto_increment,
+                Identifier varchar(100) not null,
+                -- more data columns here
+                primary key(Id)
+            )
+        </sql>
+            
+        <sql>
+            create table Concept (
+                Id bigint auto_increment,
+                Identifier varchar(100) not null,
+                -- more data columns here
+                primary key(Id)
+            )
+        </sql>
+        
+        <sql>
+            create table VocabularyConcepts (
+                Id bigint auto_increment,
+                fVocabularyId bigint not null,
+                fConceptId bigint not null,
+                primary key(Id),
+                unique(fVocabularyId, fConceptId),
+                foreign key(fVocabularyId) references Vocabulary(Id),
+                foreign key(fConceptId) references Concept(Id)
+            )
+        </sql>
+        
+        <sql>
+            create table ConceptAttribute (
+                Id bigint auto_increment,
+                Identifier varchar(100),
+                DataType tinyint,
+                -- more data columns here
+                primary key(Id)
+            )
+        </sql>
+        
+        <sql>
+            create table ConceptAttributeValue (
+                Id bigint auto_increment,
+                `Language` varchar(10),
+                `Value` varchar(1000),
+                fRelatedVocabularyConceptId bigint,
+                -- more data columns here
+                primary key(Id),
+                foreign key(fRelatedVocabularyConceptId) references VocabularyConcepts(Id)
+            )
+        </sql>
+        
+        <sql>
+            create table VocabularyConceptAttributes (
+                Id bigint auto_increment,
+                fVocabularyId bigint not null,
+                fConceptAttributeId bigint not null,
+                primary key(Id),
+                unique(fVocabularyId, fConceptAttributeId),
+                foreign key(fVocabularyId) references Vocabulary(Id),
+                foreign key(fConceptAttributeId) references ConceptAttribute(Id)
+            )
+        </sql>
+        
+        <sql>
+            create table VocabularyConceptAttributeValues (
+                Id bigint auto_increment,
+                fVocabularyConceptAttributeId bigint not null,
+                fVocabularyConceptId bigint not null,
+                fConceptAttributeValueId bigint not null,
+                primary key(Id),
+                unique(fVocabularyConceptAttributeId, fVocabularyConceptId, fConceptAttributeValueId),
+                foreign key(fVocabularyConceptAttributeId) references VocabularyConceptAttributes(Id),
+                foreign key(fVocabularyConceptId) references VocabularyConcepts(Id),
+                foreign key(fConceptAttributeValueId) references ConceptAttributeValue(Id)
+            )
+        </sql>
+        
+        <sql>
+            create table VocabularyVersion (
+                Id bigint auto_increment,
+                fEntityId bigint not null,
+                fRootVersionId bigInt not null,
+                fParentVersionId bigint,
+                UserName varchar(100) not null,
+                CommitDate timestamp not null,
+                primary key(Id),
+                foreign key(fEntityId) references Vocabulary(Id),
+                foreign key(fParentVersionId) references VocabularyVersion(Id),
+                foreign key(fParentVersionId) references VocabularyVersion(Id)
+            )
+        </sql>
+        
+        <sql>
+            create table ConceptAttributeVersion (
+                Id bigint auto_increment,
+                fEntityId bigint not null,
+                fRootVersionId bigInt not null,
+                fParentVersionId bigint,
+                UserName varchar(100) not null,
+                CommitDate timestamp not null,
+                primary key(Id),
+                foreign key(fEntityId) references ConceptAttribute(Id),
+                foreign key(fParentVersionId) references ConceptAttributeVersion(Id),
+                foreign key(fParentVersionId) references ConceptAttributeVersion(Id)
+            )
+        </sql>
+        
+        <sql>
+            create table Revision (
+                Id bigint auto_increment,
+                CreationDate timestamp not null,
+                UserName varchar(100) not null,
+                primary key(Id)
+            )
+        </sql>
+        
+        <sql>
+            create table RevisionVocabularyVersions (
+                fRevisionId bigint,
+                fVocabularyVersionId bigint,
+                primary key(fRevisionId, fVocabularyVersionId),
+                foreign key(fRevisionId) references Revision(Id),
+                foreign key(fVocabularyVersionId) references VocabularyVersion(Id)
+            )
+        </sql>
+        
+        <sql>
+            create table RevisionConceptAttributeVersions (
+                fRevisionId bigint,
+                fConceptAttributeVersionId bigint,
+                primary key(fRevisionId, fConceptAttributeVersionId),
+                foreign key(fRevisionId) references Revision(Id),
+                foreign key(fConceptAttributeVersionId) references ConceptAttributeVersion(Id)
+            )
+        </sql>
+        
+        <sql>
+            create table WorkSet (
+                Id bigint auto_increment,
+                UserName varchar(100) not null,
+                -- more data columns here
+                primary key(Id)
+            )
+        </sql>
+        
+        <sql>
+            create table WorkSetVocabulary (
+                Id bigint auto_increment,
+                fWorkSetId bigint not null,
+                WorkActionType tinyint not null,
+                fVocabularyId bigint,
+                primary key(Id),
+                foreign key(fWorkSetId) references WorkSet(Id),
+                foreign key(fVocabularyId) references Vocabulary(Id)
+            )
+        </sql>
+        
+        <sql>
+            create table WorkSetVocabularyData (
+                fWorkSetVocabularyId bigint,
+                Identifier varchar(100),
+                -- more data columns here
+                primary key(fWorkSetVocabularyId),
+                foreign key(fWorkSetVocabularyId) references WorkSetVocabulary(Id)
+            )
+        </sql>
+        
+        <sql>
+            create table WorkSetVocabularyConcept (
+                Id bigint auto_increment,
+                fWorkSetVocabularyId bigint not null,
+                WorkActionType tinyint not null,
+                fConceptId bigint,
+                primary key(Id),
+                foreign key(fWorkSetVocabularyId) references WorkSetVocabulary(Id),
+                foreign key(fConceptId) references Concept(Id)
+            )
+        </sql>
+        
+        <sql>
+            create table WorkSetVocabularyConceptData (
+                fWorkSetVocabularyConceptId bigint,
+                Identifier varchar(100),
+                -- more data columns here
+                primary key(fWorkSetVocabularyConceptId),
+                foreign key(fWorkSetVocabularyConceptId) references WorkSetVocabularyConcept(Id)
+            )
+        </sql>
+        
+        <sql>
+            create table WorkSetConceptAttribute (
+                Id bigint auto_increment,
+                fWorkSetId bigint not null,
+                WorkActionType tinyint not null,
+                fConceptAttributeId bigint,
+                primary key(Id),
+                foreign key(fWorkSetId) references WorkSet(Id),
+                foreign key(fConceptAttributeId) references ConceptAttribute(Id)
+            )
+        </sql>
+        
+        <sql>
+            create table WorkSetConceptAttributeData (
+                fWorkSetConceptAttributeId bigint,
+                Identifier varchar(100),
+                DataType varchar(100),
+                -- more data columns here
+                primary key(fWorkSetConceptAttributeId),
+                foreign key(fWorkSetConceptAttributeId) references WorkSetConceptAttribute(Id)
+            )
+        </sql>
+        
+        <sql>
+            create table WorkSetVocabularyConceptAttribute (
+                Id bigint auto_increment,
+                fWorkSetVocabularyId bigint not null,
+                fWorkSetConceptAttributeId bigint not null,
+                WorkActionType tinyint not null,
+                primary key(Id),
+                foreign key(fWorkSetVocabularyId) references WorkSetVocabulary(Id),
+                foreign key(fWorkSetConceptAttributeId) references WorkSetConceptAttribute(Id)
+            )
+        </sql>
+        
+        <sql>
+            create table WorkSetVocabularyConceptAttributeValue (
+                Id bigint auto_increment,
+                fWorkSetVocabularyConceptId bigint not null,
+                fWorkSetVocabularyConceptAttributeId bigint not null,
+                WorkActionType tinyint not null,
+                fConceptAttributeValueId bigint,
+                primary key(Id),
+                foreign key(fWorkSetVocabularyConceptId) references WorkSetVocabularyConcept(Id),
+                foreign key(fWorkSetVocabularyConceptAttributeId) references WorkSetVocabularyConceptAttribute(Id),
+                foreign key(fConceptAttributeValueId) references ConceptAttributeValue(Id)
+            )
+        </sql>
+        
+        <sql>
+            create table WorkSetVocabularyConceptAttributeValueData (
+                fWorkSetVocabularyConceptAttributeValueId bigint,
+                `Language` varchar(10),
+                `Value` varchar(1000),
+                -- more data columns here
+                primary key(fWorkSetVocabularyConceptAttributeValueId),
+                foreign key(fWorkSetVocabularyConceptAttributeValueId) references WorkSetVocabularyConceptAttributeValue(Id)
+            )
+        </sql>
+        
+        <modifySql dbms="mysql">
+            <append value=" ENGINE = InnoDB DEFAULT CHARSET = utf8"/>
+        </modifySql>
+    </changeSet>
+    
 </databaseChangeLog>
