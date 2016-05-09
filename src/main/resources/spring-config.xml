@@ -34,4 +34,14 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
     
+    <bean id="resxManager" class="eionet.datadict.resx.EmbeddedResourceManager">
+        <constructor-arg name="resourceMappings">
+            <map>
+                <entry 
+                    key="eionet.datadict.dal.impl.versioning.RevisionDaoImpl.getLatestRevision" 
+                    value="sqls/versioning/revisiondao/GetLatestRevision.sql" />
+            </map>
+        </constructor-arg>
+    </bean>
+    
 </beans>

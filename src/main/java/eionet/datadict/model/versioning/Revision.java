@@ -2,6 +2,7 @@ package eionet.datadict.model.versioning;
 
 import java.util.LinkedList;
 import java.util.List;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -10,7 +11,7 @@ import java.util.List;
 public class Revision {
 
     private Long id;
-    private Long creationDate;
+    private DateTime creationDate;
     private String userName;
     
     private Revision parent;
@@ -31,11 +32,11 @@ public class Revision {
         this.id = id;
     }
 
-    public Long getCreationDate() {
+    public DateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Long creationDate) {
+    public void setCreationDate(DateTime creationDate) {
         this.creationDate = creationDate;
     }
 
