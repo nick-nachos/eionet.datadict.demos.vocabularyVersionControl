@@ -10,7 +10,7 @@ import java.util.List;
 public class VocabularyConceptAttributeValueSet {
 
     private ConceptAttribute attribute;
-    private Vocabulary vocabulary;
+    private VocabularyConcept concept;
     
     private final List<VocabularyConceptAttributeValue> values;
 
@@ -26,14 +26,14 @@ public class VocabularyConceptAttributeValueSet {
         this.attribute = attribute;
     }
 
-    public Vocabulary getVocabulary() {
-        return vocabulary;
+    public VocabularyConcept getConcept() {
+        return concept;
     }
 
-    public void setVocabulary(Vocabulary vocabulary) {
-        this.vocabulary = vocabulary;
+    public void setConcept(VocabularyConcept concept) {
+        this.concept = concept;
     }
-    
+
     public List<VocabularyConceptAttributeValue> getValues() {
         return values;
     }

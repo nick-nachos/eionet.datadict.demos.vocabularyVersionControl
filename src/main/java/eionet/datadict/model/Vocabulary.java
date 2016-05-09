@@ -15,12 +15,12 @@ public class Vocabulary {
     private String baseUri;
     private VocabularyRegulationStatus regulationStatus;
     
-    private final List<ConceptAttribute> attributes;
+    private final List<ConceptAttribute> conceptAttributes;
     
     private final List<VocabularyConcept> concepts;
     
     public Vocabulary() {
-        this.attributes = new LinkedList<>();
+        this.conceptAttributes = new LinkedList<>();
         this.concepts = new LinkedList<>();
     }
 
@@ -64,8 +64,8 @@ public class Vocabulary {
         this.regulationStatus = regulationStatus;
     }
 
-    public List<ConceptAttribute> getAttributes() {
-        return attributes;
+    public List<ConceptAttribute> getConceptAttributes() {
+        return conceptAttributes;
     }
     
     public List<VocabularyConcept> getConcepts() {
