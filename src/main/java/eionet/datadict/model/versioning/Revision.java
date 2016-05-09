@@ -13,6 +13,8 @@ public class Revision {
     private Long creationDate;
     private String userName;
     
+    private Revision parent;
+    
     private final List<VocabularyVersion> vocabularyVersions;
     private final List<ConceptAttributeVersion> conceptAttributeVersions;
     
@@ -45,6 +47,14 @@ public class Revision {
         this.userName = userName;
     }
 
+    public Revision getParent() {
+        return parent;
+    }
+
+    public void setParent(Revision parent) {
+        this.parent = parent;
+    }
+    
     public List<VocabularyVersion> getVocabularyVersions() {
         return vocabularyVersions;
     }

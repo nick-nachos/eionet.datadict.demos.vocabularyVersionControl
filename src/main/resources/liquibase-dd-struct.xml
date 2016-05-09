@@ -101,7 +101,9 @@
                     Id bigint auto_increment,
                     CreationDate datetime not null,
                     UserName varchar(100) not null,
-                    primary key(Id)
+                    fParentRevisionId bigint,
+                    primary key(Id),
+                    foreign key(fParentRevisionId) references Revision(Id)
             );
 
             create table RevisionVocabularyVersions (
