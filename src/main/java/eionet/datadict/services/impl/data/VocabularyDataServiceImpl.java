@@ -18,8 +18,6 @@ import eionet.datadict.services.impl.data.modelutil.ConceptAttributeValueConcept
 import eionet.datadict.services.impl.data.modelutil.ConceptIdProvider;
 import eionet.datadict.services.impl.data.modelutil.ConceptToAttributeValueLinker;
 import eionet.datadict.services.impl.data.util.DataObjects;
-import eionet.datadict.services.impl.data.util.ObjectJoinLinker;
-import eionet.datadict.services.impl.data.util.ObjectKeyProvider;
 import java.util.List;
 
 public class VocabularyDataServiceImpl implements VocabularyDataService {
