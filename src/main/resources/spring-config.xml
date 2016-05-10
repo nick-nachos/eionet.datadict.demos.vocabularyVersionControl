@@ -54,6 +54,10 @@
                 <entry 
                     key="eionet.datadict.dal.impl.ConceptDaoImpl.getConcepts" 
                     value="sqls/conceptdao/GetConcepts.sql" />
+                
+                <entry 
+                    key="eionet.datadict.dal.impl.ConceptAttributeDaoImpl.getConceptAttributes" 
+                    value="sqls/conceptattributedao/GetConceptAttributes.sql" />
             </map>
         </constructor-arg>
     </bean>
