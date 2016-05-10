@@ -3,10 +3,6 @@ package eionet.datadict.model;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Nikolaos Nakas <nn@eworx.gr>
- */
 public class Vocabulary {
 
     private Long id;

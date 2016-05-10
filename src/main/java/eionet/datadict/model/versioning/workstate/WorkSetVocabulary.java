@@ -4,10 +4,6 @@ import eionet.datadict.model.Vocabulary;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Nikolaos Nakas <nn@eworx.gr>
- */
 public class WorkSetVocabulary {
     
     private WorkSet workSet;

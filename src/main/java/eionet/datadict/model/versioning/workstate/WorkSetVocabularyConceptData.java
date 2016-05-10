@@ -2,10 +2,6 @@ package eionet.datadict.model.versioning.workstate;
 
 import eionet.datadict.model.StandardGenericStatus;
 
-/**
- *
- * @author Nikolaos Nakas <nn@eworx.gr>
- */
 public class WorkSetVocabularyConceptData {
 
     private WorkSetVocabularyConcept workSetVocabularyConcept;

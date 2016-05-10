@@ -1,9 +1,5 @@
 package eionet.datadict.model.versioning.workstate;
 
-/**
- *
- * @author Nikolaos Nakas <nn@eworx.gr>
- */
 public class WorkSetVocabularyConceptAttributeValueData {
     
     private WorkSetVocabularyConceptAttributeValue workSetVocabularyConceptAttributeValue;

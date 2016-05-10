@@ -1,9 +1,5 @@
 package eionet.datadict.model;
 
-/**
- *
- * @author Nikolaos Nakas <nn@eworx.gr>
- */
 public class VocabularyConceptAttributeValue {
 
     private VocabularyConceptAttributeValueSet valueSet;

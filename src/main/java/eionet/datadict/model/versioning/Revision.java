@@ -4,10 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import org.joda.time.DateTime;
 
-/**
- *
- * @author Nikolaos Nakas <nn@eworx.gr>
- */
 public class Revision {
 
     private Long id;

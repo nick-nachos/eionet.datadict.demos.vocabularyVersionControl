@@ -2,10 +2,6 @@ package eionet.datadict.model.versioning.workstate;
 
 import eionet.datadict.model.ConceptAttribute;
 
-/**
- *
- * @author Nikolaos Nakas <nn@eworx.gr>
- */
 public class WorkSetConceptAttribute {
 
     private WorkSet workSet;

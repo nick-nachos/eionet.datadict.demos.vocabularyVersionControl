@@ -2,10 +2,6 @@ package eionet.datadict.model.versioning.workstate;
 
 import eionet.datadict.model.VocabularyConcept;
 
-/**
- *
- * @author Nikolaos Nakas <nn@eworx.gr>
- */
 public class WorkSetVocabularyConcept {
 
     private WorkSetVocabulary workSetVocabulary;

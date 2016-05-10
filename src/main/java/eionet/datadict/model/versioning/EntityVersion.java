@@ -1,9 +1,5 @@
 package eionet.datadict.model.versioning;
 
-/**
- *
- * @author Nikolaos Nakas <nn@eworx.gr>
- */
 public abstract class EntityVersion<T> {
 
     private Long id;
