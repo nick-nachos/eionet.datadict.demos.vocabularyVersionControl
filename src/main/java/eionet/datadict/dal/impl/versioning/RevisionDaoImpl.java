@@ -35,7 +35,7 @@ public class RevisionDaoImpl extends JdbcRepositoryBase implements RevisionDao {
                 Revision revision = new Revision();
                 revision.setId(rs.getLong("Id"));
                 revision.setUserName(rs.getString("UserName"));
-                revision.setCreationDate(ResultSetUtils.getDateTime(rs, "CreationDate"));
+                revision.setCreationDate(ResultSetUtils.getDateTimeFromMillis(rs, "CreationDate"));
                 
                 Long parentId = ResultSetUtils.getLong(rs, "fParentRevisionId");
                 

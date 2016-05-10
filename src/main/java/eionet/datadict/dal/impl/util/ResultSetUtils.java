@@ -2,8 +2,6 @@ package eionet.datadict.dal.impl.util;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.TimeZone;
 import org.joda.time.DateTime;
 
 public class ResultSetUtils {
@@ -14,10 +12,10 @@ public class ResultSetUtils {
         return rs.wasNull() ? null : value;
     }
     
-    public static DateTime getDateTime(ResultSet rs, String columnLabel) throws SQLException {
-        java.sql.Date value = rs.getDate(columnLabel, Calendar.getInstance(TimeZone.getTimeZone("UTC")));
+    public static DateTime getDateTimeFromMillis(ResultSet rs, String columnLabel) throws SQLException {
+        Long value = getLong(rs, columnLabel);
         
-        return new DateTime(value.getTime());
+        return value == null ? null : new DateTime(value);
     }
     
 }

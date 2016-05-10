@@ -77,7 +77,7 @@
                     fRootVersionId bigInt not null,
                     fParentVersionId bigint,
                     UserName varchar(100) not null,
-                    CommitDate datetime not null,
+                    CommitDate bigint not null,
                     primary key(Id),
                     foreign key(fEntityId) references Vocabulary(Id),
                     foreign key(fParentVersionId) references VocabularyVersion(Id),
@@ -90,7 +90,7 @@
                     fRootVersionId bigInt not null,
                     fParentVersionId bigint,
                     UserName varchar(100) not null,
-                    CommitDate datetime not null,
+                    CommitDate bigint not null,
                     primary key(Id),
                     foreign key(fEntityId) references ConceptAttribute(Id),
                     foreign key(fParentVersionId) references ConceptAttributeVersion(Id),
@@ -99,7 +99,7 @@
 
             create table Revision (
                     Id bigint auto_increment,
-                    CreationDate datetime not null,
+                    CreationDate bigint not null,
                     UserName varchar(100) not null,
                     fParentRevisionId bigint,
                     primary key(Id),
