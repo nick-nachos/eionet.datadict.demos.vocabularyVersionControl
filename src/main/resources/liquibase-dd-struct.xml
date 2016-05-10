@@ -10,6 +10,9 @@
             create table Vocabulary (
                     Id bigint auto_increment,
                     Identifier varchar(100) not null,
+                    Label varchar(255) not null,
+                    BaseUri varchar(255) not null,
+                    RegulationStatus tinyint not null,
                     -- more data columns here
                     primary key(Id)
             );

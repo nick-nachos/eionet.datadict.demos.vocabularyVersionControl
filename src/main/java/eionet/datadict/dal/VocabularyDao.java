@@ -8,6 +8,8 @@ public interface VocabularyDao {
 
     List<Vocabulary> getVocabularies(Revision revision);
     
-    Vocabulary getVocabulary(Revision revision);
+    Vocabulary getVocabulary(Long id);
+    
+    Vocabulary getVocabulary(Revision revision, String identifier);
     
 }
