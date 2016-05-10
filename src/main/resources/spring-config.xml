@@ -40,6 +40,7 @@
                 <entry 
                     key="eionet.datadict.dal.impl.versioning.RevisionDaoImpl.getLatestRevision" 
                     value="sqls/versioning/revisiondao/GetLatestRevision.sql" />
+                
                 <entry 
                     key="eionet.datadict.dal.impl.VocabularyDaoImpl.getVocabularies" 
                     value="sqls/vocabularydao/GetVocabulariesOfRevision.sql" />
@@ -49,6 +50,10 @@
                 <entry 
                     key="eionet.datadict.dal.impl.VocabularyDaoImpl.getVocabularyByRevisionAndIdentifier" 
                     value="sqls/vocabularydao/GetVocabularyByRevisionAndIdentifier.sql" />
+                
+                <entry 
+                    key="eionet.datadict.dal.impl.ConceptDaoImpl.getConcepts" 
+                    value="sqls/conceptdao/GetConcepts.sql" />
             </map>
         </constructor-arg>
     </bean>
