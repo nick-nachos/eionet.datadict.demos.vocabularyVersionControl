@@ -1,7 +1,7 @@
-package eionet.datadict.services.impl.data.modelutil;
+package eionet.datadict.model.util;
 
 import eionet.datadict.model.VocabularyConceptAttributeValueSet;
-import eionet.datadict.services.impl.data.util.ObjectKeyProvider;
+import eionet.datadict.data.ObjectKeyProvider;
 
 public class ConceptAttributeValueAttributeIdProvider implements ObjectKeyProvider<VocabularyConceptAttributeValueSet, Long> {
 

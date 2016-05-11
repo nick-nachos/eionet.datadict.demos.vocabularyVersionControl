@@ -1,8 +1,8 @@
-package eionet.datadict.services.impl.data.modelutil;
+package eionet.datadict.model.util;
 
 import eionet.datadict.model.VocabularyConcept;
 import eionet.datadict.model.VocabularyConceptAttributeValue;
-import eionet.datadict.services.impl.data.util.ObjectJoinLinker;
+import eionet.datadict.data.ObjectJoinLinker;
 
 public class ConceptAttributeValueToRelatedConceptLinker implements ObjectJoinLinker<VocabularyConcept, VocabularyConceptAttributeValue> {
 

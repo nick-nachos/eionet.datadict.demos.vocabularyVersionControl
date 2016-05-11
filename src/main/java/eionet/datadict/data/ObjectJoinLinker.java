@@ -1,4 +1,4 @@
-package eionet.datadict.services.impl.data.util;
+package eionet.datadict.data;
 
 public interface ObjectJoinLinker<T1, T2> {
 

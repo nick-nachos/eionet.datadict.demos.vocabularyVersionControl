@@ -1,4 +1,4 @@
-package eionet.datadict.services.impl.data.util;
+package eionet.datadict.data;
 
 public class LinkParentChildOptions {
 

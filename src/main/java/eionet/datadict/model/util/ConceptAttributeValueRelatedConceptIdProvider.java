@@ -1,7 +1,7 @@
-package eionet.datadict.services.impl.data.modelutil;
+package eionet.datadict.model.util;
 
 import eionet.datadict.model.VocabularyConceptAttributeValue;
-import eionet.datadict.services.impl.data.util.ObjectKeyProvider;
+import eionet.datadict.data.ObjectKeyProvider;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
