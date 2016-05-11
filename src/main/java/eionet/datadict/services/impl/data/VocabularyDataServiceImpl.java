@@ -19,7 +19,11 @@ import eionet.datadict.services.impl.data.modelutil.ConceptIdProvider;
 import eionet.datadict.services.impl.data.modelutil.ConceptToAttributeValueLinker;
 import eionet.datadict.services.impl.data.util.DataObjects;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Service
 public class VocabularyDataServiceImpl implements VocabularyDataService {
 
     private final VocabularyDao vocabularyDao;
@@ -28,6 +32,7 @@ public class VocabularyDataServiceImpl implements VocabularyDataService {
     private final ConceptAttributeValuesDao conceptAttributeValuesDao;
     private final RevisionDao revisionDao;
     
+    @Autowired
     public VocabularyDataServiceImpl(VocabularyDao vocabularyDao, ConceptDao conceptDao, 
             ConceptAttributeDao conceptAttributeDao, ConceptAttributeValuesDao conceptAttributeValuesDao, 
             RevisionDao revisionDao) {
@@ -39,6 +44,7 @@ public class VocabularyDataServiceImpl implements VocabularyDataService {
     }
     
     @Override
+    @Transactional(readOnly = true)
     public List<Vocabulary> getLatestVocabularyEntries() {
         Revision latestRevision = this.revisionDao.getLatestRevision();
         
@@ -46,9 +52,10 @@ public class VocabularyDataServiceImpl implements VocabularyDataService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Vocabulary getLatestVocabulary(String identifier) {
         Revision latestRevision = this.revisionDao.getLatestRevision();
-        Vocabulary vocabulary = this.vocabularyDao.getVocabulary(latestRevision);
+        Vocabulary vocabulary = this.vocabularyDao.getVocabulary(latestRevision, identifier);
         this.linkVocabularyToConceptAttributes(vocabulary, this.conceptAttributeDao.getConceptAttributes(vocabulary));
         this.linkVocabularyToConcepts(vocabulary, this.conceptDao.getConcepts(vocabulary));
         this.linkConceptsToAttributeValues(vocabulary.getConcepts(), this.conceptAttributeValuesDao.getConceptAttributeValues(vocabulary));
