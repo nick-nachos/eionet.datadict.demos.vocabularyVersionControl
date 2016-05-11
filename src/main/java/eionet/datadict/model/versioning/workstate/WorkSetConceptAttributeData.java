@@ -1,13 +1,13 @@
 package eionet.datadict.model.versioning.workstate;
 
-import eionet.datadict.model.ConceptAttribute;
+import eionet.datadict.model.DataType;
 
 public class WorkSetConceptAttributeData {
     
     private WorkSetConceptAttribute workSetConceptAttribute;
     
     private String identifier;
-    private ConceptAttribute.DataType dataType;
+    private DataType dataType;
 
     public WorkSetConceptAttribute getWorkSetConceptAttribute() {
         return workSetConceptAttribute;
@@ -25,11 +25,11 @@ public class WorkSetConceptAttributeData {
         this.identifier = identifier;
     }
 
-    public ConceptAttribute.DataType getDataType() {
+    public DataType getDataType() {
         return dataType;
     }
 
-    public void setDataType(ConceptAttribute.DataType dataType) {
+    public void setDataType(DataType dataType) {
         this.dataType = dataType;
     }
     

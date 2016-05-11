@@ -2,6 +2,7 @@ package eionet.datadict.dal.impl;
 
 import eionet.datadict.dal.ConceptAttributeDao;
 import eionet.datadict.model.ConceptAttribute;
+import eionet.datadict.model.DataType;
 import eionet.datadict.model.Vocabulary;
 import eionet.datadict.resx.EmbeddedResourceManager;
 import java.sql.ResultSet;
@@ -40,7 +41,7 @@ public class ConceptAttributeDaoImpl extends JdbcRepositoryBase implements Conce
             ConceptAttribute ca = new ConceptAttribute();
             ca.setId(rs.getLong("Id"));
             ca.setIdentifier(rs.getString("Identifier"));
-            ca.setDataType(ConceptAttribute.DataType.fromValue(rs.getByte("DataType")));
+            ca.setDataType(DataType.fromValue(rs.getByte("DataType")));
             
             return ca;
         }
