@@ -62,6 +62,15 @@
                 <entry 
                     key="eionet.datadict.dal.impl.ConceptAttributeValuesDaoImpl.getConceptAttributeValues" 
                     value="sqls/conceptattributevaluesdao/GetConceptAttributeValues.sql" />
+                <entry 
+                    key="eionet.datadict.dal.impl.ConceptAttributeValuesDaoImpl.getConceptLocalLinks" 
+                    value="sqls/conceptattributevaluesdao/GetConceptLinks.sql" />
+                <entry 
+                    key="eionet.datadict.dal.impl.ConceptAttributeValuesDaoImpl.getConceptInternalLinks" 
+                    value="sqls/conceptattributevaluesdao/GetConceptLinks.sql" />
+                <entry 
+                    key="eionet.datadict.dal.impl.ConceptAttributeValuesDaoImpl.getConceptExternalLinks" 
+                    value="sqls/conceptattributevaluesdao/GetConceptExternalLinks.sql" />
             </map>
         </constructor-arg>
     </bean>

@@ -41,8 +41,38 @@ public class ConceptAttributeValuesDaoImpl extends JdbcRepositoryBase implements
         
         return this.getNamedParameterJdbcTemplate().query(sql, parameters, new AttributeValueSetExtractor());
     }
+
+    @Override
+    public List<VocabularyConceptAttributeValueSet> getConceptLocalLinks(Vocabulary vocabulary) {
+        String sql = this.resourceManager.getText("eionet.datadict.dal.impl.ConceptAttributeValuesDaoImpl.getConceptLocalLinks");
+        Map<String, Object> parameters = this.createParametersMap();
+        parameters.put("vocabularyId", vocabulary.getId());
+        parameters.put("dataType", DataType.LOCAL_REFERENCE.getValue());
+        
+        return this.getNamedParameterJdbcTemplate().query(sql, parameters, new LinkSetExtractor());
+    }
+
+    @Override
+    public List<VocabularyConceptAttributeValueSet> getConceptInternalLinks(Vocabulary vocabulary) {
+        String sql = this.resourceManager.getText("eionet.datadict.dal.impl.ConceptAttributeValuesDaoImpl.getConceptInternalLinks");
+        Map<String, Object> parameters = this.createParametersMap();
+        parameters.put("vocabularyId", vocabulary.getId());
+        parameters.put("dataType", DataType.LOCAL_REFERENCE.getValue());
+        
+        return this.getNamedParameterJdbcTemplate().query(sql, parameters, new LinkSetExtractor());
+    }
+
+    @Override
+    public List<VocabularyConceptAttributeValueSet> getConceptExternalLinks(Vocabulary vocabulary) {
+        String sql = this.resourceManager.getText("eionet.datadict.dal.impl.ConceptAttributeValuesDaoImpl.getConceptExternalLinks");
+        Map<String, Object> parameters = this.createParametersMap();
+        parameters.put("vocabularyId", vocabulary.getId());
+        parameters.put("refType", DataType.REFERENCE.getValue());
+        
+        return this.getNamedParameterJdbcTemplate().query(sql, parameters, new AttributeValueSetExtractor());
+    }
     
-    protected static class AttributeValueSetExtractor implements ResultSetExtractor<List<VocabularyConceptAttributeValueSet>> {
+    protected static abstract class AttributeValueSetExtractorBase implements ResultSetExtractor<List<VocabularyConceptAttributeValueSet>> {
         
         @Override
         public List<VocabularyConceptAttributeValueSet> extractData(ResultSet rs) throws SQLException, DataAccessException {
@@ -79,14 +109,14 @@ public class ConceptAttributeValuesDaoImpl extends JdbcRepositoryBase implements
                 }
                 
                 VocabularyConceptAttributeValue value = new VocabularyConceptAttributeValue();
-                value.setId(rs.getLong("Id"));
-                value.setLanguage(rs.getString("Language"));
-                value.setValue(rs.getString("Value"));
+                this.setProperties(value, rs);
                 workingSet.getValues().add(value);
             }
             
             return result;
         }
+        
+        protected abstract void setProperties(VocabularyConceptAttributeValue value, ResultSet rs)  throws SQLException, DataAccessException;
         
         private boolean hasWorkingSetChanged(VocabularyConceptAttributeValueSet workingSet, Long conceptId, Long conceptAttributeId) {
             if (this.hasWorkingConceptChanged(workingSet, conceptId)) {
@@ -110,6 +140,51 @@ public class ConceptAttributeValuesDaoImpl extends JdbcRepositoryBase implements
             }
             
             return !workingSet.getAttribute().getId().equals(conceptAttributeId);
+        }
+        
+    }
+    
+    protected static class AttributeValueSetExtractor extends AttributeValueSetExtractorBase {
+
+        @Override
+        protected void setProperties(VocabularyConceptAttributeValue value, ResultSet rs) throws SQLException, DataAccessException {
+            value.setId(rs.getLong("Id"));
+            value.setLanguage(rs.getString("Language"));
+            value.setValue(rs.getString("Value"));
+        }
+        
+    }
+    
+    protected static class LinkSetExtractor extends AttributeValueSetExtractorBase {
+
+        private Map<Long, Vocabulary> vocabularyCache;
+        private Map<Long, VocabularyConcept> conceptCache;
+        
+        @Override
+        protected void setProperties(VocabularyConceptAttributeValue value, ResultSet rs) throws SQLException, DataAccessException {
+            value.setId(rs.getLong("Id"));
+            value.setLanguage(rs.getString("Language"));
+            Long relatedConceptId = rs.getLong("fRelatedConceptId");
+            
+            if (conceptCache.containsKey(relatedConceptId)) {
+                value.setRelatedConcept(conceptCache.get(relatedConceptId));
+                return;
+            }
+            
+            VocabularyConcept relatedConcept = new VocabularyConcept();
+            relatedConcept.setId(relatedConceptId);
+            
+            Long relatedVocabularyId = rs.getLong("fRelatedVocabularyId");
+            
+            if (!this.vocabularyCache.containsKey(relatedVocabularyId)) {
+                Vocabulary relatedVocabulary = new Vocabulary();
+                relatedVocabulary.setId(relatedVocabularyId);
+                this.vocabularyCache.put(relatedVocabularyId, relatedVocabulary);
+            }
+            
+            relatedConcept.setVocabulary(this.vocabularyCache.get(relatedVocabularyId));
+            conceptCache.put(relatedConceptId, relatedConcept);
+            value.setRelatedConcept(relatedConcept);
         }
         
     }

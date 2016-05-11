@@ -24,6 +24,6 @@ inner join
 on
     vcav.fConceptAttributeValueId = cav.Id
 where
-    vc.fVocabularyId = :vocabularyId and ca.DataType not in (:localRefType, :refType)
+    vc.fVocabularyId = :vocabularyId and ca.DataType = :refType and cav.fRelatedVocabularyConceptId is null
 order by
     vc.fConceptId, vca.fConceptAttributeId

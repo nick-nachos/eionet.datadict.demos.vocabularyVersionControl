@@ -8,4 +8,10 @@ public interface ConceptAttributeValuesDao {
 
     List<VocabularyConceptAttributeValueSet> getConceptAttributeValues(Vocabulary vocabulary);
     
+    List<VocabularyConceptAttributeValueSet> getConceptLocalLinks(Vocabulary vocabulary);
+    
+    List<VocabularyConceptAttributeValueSet> getConceptInternalLinks(Vocabulary vocabulary);
+    
+    List<VocabularyConceptAttributeValueSet> getConceptExternalLinks(Vocabulary vocabulary);
+    
 }

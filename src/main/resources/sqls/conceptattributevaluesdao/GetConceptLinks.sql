@@ -2,9 +2,11 @@
 select
     vc.fConceptId,
     vca.fConceptAttributeId,
+    relvc.fVocabularyId as fRelatedVocabularyId,
+    relvc.fConceptId as fRelatedConceptId,
     cav.Id,
     cav.Language,
-    cav.Value
+    cav.fRelatedVocabularyConceptId
 from
     VocabularyConcepts vc
 inner join
@@ -23,7 +25,11 @@ inner join
     ConceptAttributeValue cav
 on
     vcav.fConceptAttributeValueId = cav.Id
+inner join
+    VocabularyConcepts relvc
+on
+    cav.fRelatedVocabularyConceptId = relvc.Id
 where
-    vc.fVocabularyId = :vocabularyId and ca.DataType not in (:localRefType, :refType)
+    vc.fVocabularyId = :vocabularyId and ca.DataType = :dataType
 order by
     vc.fConceptId, vca.fConceptAttributeId
