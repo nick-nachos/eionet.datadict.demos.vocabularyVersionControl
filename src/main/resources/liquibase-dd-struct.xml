@@ -48,7 +48,7 @@
             create table ConceptAttributeValue (
                     Id bigint auto_increment,
                     `Language` varchar(10),
-                    `Value` varchar(1000),
+                    `Value` Text,
                     fRelatedVocabularyConceptId bigint,
                     -- more data columns here
                     primary key(Id),
