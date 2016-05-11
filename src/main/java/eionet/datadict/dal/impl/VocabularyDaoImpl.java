@@ -1,6 +1,7 @@
 package eionet.datadict.dal.impl;
 
 import eionet.datadict.dal.VocabularyDao;
+import eionet.datadict.model.DataType;
 import eionet.datadict.model.Vocabulary;
 import eionet.datadict.model.VocabularyRegulationStatus;
 import eionet.datadict.model.versioning.Revision;
@@ -52,6 +53,16 @@ public class VocabularyDaoImpl extends JdbcRepositoryBase implements VocabularyD
         parameters.put("vocabularyIdentifier", identifier);
         
         return IterableUtils.firstOrNull(this.getNamedParameterJdbcTemplate().query(sql, parameters, new VocabularyRowMapper()));
+    }
+
+    @Override
+    public List<Vocabulary> getRelatedVocabularies(Vocabulary vocabulary) {
+        String sql = this.resourceManager.getText("eionet.datadict.dal.impl.VocabularyDaoImpl.getRelatedVocabularies");
+        Map<String, Object> parameters = this.createParametersMap();
+        parameters.put("vocabularyId", vocabulary.getId());
+        parameters.put("refType", DataType.REFERENCE.getValue());
+        
+        return this.getNamedParameterJdbcTemplate().query(sql, parameters, new VocabularyRowMapper());
     }
     
     

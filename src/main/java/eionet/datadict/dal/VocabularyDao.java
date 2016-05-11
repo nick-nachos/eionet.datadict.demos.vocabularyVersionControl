@@ -12,4 +12,6 @@ public interface VocabularyDao {
     
     Vocabulary getVocabulary(Revision revision, String identifier);
     
+    List<Vocabulary> getRelatedVocabularies(Vocabulary vocabulary);
+    
 }

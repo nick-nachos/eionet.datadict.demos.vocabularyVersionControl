@@ -1,5 +1,6 @@
 
 select
+    :vocabularyId as fVocabularyId,
     c.*
 from
     VocabularyConcepts vc
@@ -9,3 +10,5 @@ on
     vc.fConceptId = c.Id
 where
     vc.fVocabularyId = :vocabularyId
+order by
+    c.Id

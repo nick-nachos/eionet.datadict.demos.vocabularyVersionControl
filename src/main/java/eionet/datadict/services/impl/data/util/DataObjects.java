@@ -17,17 +17,42 @@ public class DataObjects {
         Collections.sort(objects, new ObjectByKeyComparator<>(keyProvider, keyComparator));
     }
     
+    public static LinkParentChildOptions createDefaultLinkParentChildOptions() {
+        LinkParentChildOptions options = new LinkParentChildOptions();
+        options.setParentListSorted(false);
+        options.setChildListSorted(false);
+        
+        return options;
+    }
+    
     public static <K1, K2, V extends Comparable<V>> void linkParentChild(
             List<K1> parents, List<K2> children, ObjectJoinLinker<K1, K2> linker,
             ObjectKeyProvider<K1, V> parentKeyProvider, ObjectKeyProvider<K2, V> childKeyProvider) {
-        linkParentChild(parents, children, linker, parentKeyProvider, childKeyProvider, new ComparableComparator<V>());
+        linkParentChild(parents, children, linker, parentKeyProvider, childKeyProvider, new ComparableComparator<V>(), createDefaultLinkParentChildOptions());
+    }
+    
+    public static <K1, K2, V extends Comparable<V>> void linkParentChild(
+            List<K1> parents, List<K2> children, ObjectJoinLinker<K1, K2> linker,
+            ObjectKeyProvider<K1, V> parentKeyProvider, ObjectKeyProvider<K2, V> childKeyProvider, LinkParentChildOptions options) {
+        linkParentChild(parents, children, linker, parentKeyProvider, childKeyProvider, new ComparableComparator<V>(), options);
     }
     
     public static <K1, K2, V> void linkParentChild(List<K1> parents, List<K2> children, ObjectJoinLinker<K1, K2> linker,
             ObjectKeyProvider<K1, V> parentKeyProvider, ObjectKeyProvider<K2, V> childKeyProvider,
             Comparator<V> keyComparator) {
-        sort(parents, parentKeyProvider, keyComparator);
-        sort(children, childKeyProvider, keyComparator);
+        linkParentChild(parents, children, linker, parentKeyProvider, childKeyProvider, keyComparator, createDefaultLinkParentChildOptions());
+    }
+    
+    public static <K1, K2, V> void linkParentChild(List<K1> parents, List<K2> children, ObjectJoinLinker<K1, K2> linker,
+            ObjectKeyProvider<K1, V> parentKeyProvider, ObjectKeyProvider<K2, V> childKeyProvider,
+            Comparator<V> keyComparator, LinkParentChildOptions options) {
+        if (!options.isParentListSorted()) {
+            sort(parents, parentKeyProvider, keyComparator);
+        }
+        
+        if (!options.isChildListSorted()) {
+            sort(children, childKeyProvider, keyComparator);
+        }
         
         Iterator<K1> leftIt = parents.iterator();
         Iterator<K2> rightIt = children.iterator();

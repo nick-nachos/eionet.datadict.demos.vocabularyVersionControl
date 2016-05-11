@@ -1,6 +1,7 @@
 package eionet.datadict.dal.impl;
 
 import eionet.datadict.dal.ConceptDao;
+import eionet.datadict.model.DataType;
 import eionet.datadict.model.StandardGenericStatus;
 import eionet.datadict.model.Vocabulary;
 import eionet.datadict.model.VocabularyConcept;
@@ -33,9 +34,21 @@ public class ConceptDaoImpl extends JdbcRepositoryBase implements ConceptDao {
         
         return this.getNamedParameterJdbcTemplate().query(sql, parameters, new ConceptRowMapper());
     }
+
+    @Override
+    public List<VocabularyConcept> getRelatedConcepts(Vocabulary vocabulary) {
+        String sql = this.resourceManager.getText("eionet.datadict.dal.impl.ConceptDaoImpl.getRelatedConcepts");
+        Map<String, Object> parameters = this.createParametersMap();
+        parameters.put("vocabularyId", vocabulary.getId());
+        parameters.put("refType", DataType.REFERENCE.getValue());
+        
+        return this.getNamedParameterJdbcTemplate().query(sql, parameters, new ConceptRowMapper());
+    }
     
     protected static class ConceptRowMapper implements RowMapper<VocabularyConcept> {
 
+        private Vocabulary previousVocabulary;
+        
         @Override
         public VocabularyConcept mapRow(ResultSet rs, int i) throws SQLException {
             VocabularyConcept vc = new VocabularyConcept();
@@ -46,8 +59,18 @@ public class ConceptDaoImpl extends JdbcRepositoryBase implements ConceptDao {
             vc.setStatus(StandardGenericStatus.fromValue(rs.getInt("Status")));
             vc.setDefinition(rs.getString("Definition"));
             
+            long vocabularyId = rs.getLong("fVocabularyId");
+            
+            if (this.previousVocabulary == null || this.previousVocabulary.getId() != vocabularyId) {
+                this.previousVocabulary = new Vocabulary();
+                this.previousVocabulary.setId(vocabularyId);
+            }
+            
+            vc.setVocabulary(previousVocabulary);
+            
             return vc;
         }
         
     }
+    
 }

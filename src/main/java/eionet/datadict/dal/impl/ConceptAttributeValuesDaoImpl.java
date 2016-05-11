@@ -111,6 +111,7 @@ public class ConceptAttributeValuesDaoImpl extends JdbcRepositoryBase implements
                 VocabularyConceptAttributeValue value = new VocabularyConceptAttributeValue();
                 this.setProperties(value, rs);
                 workingSet.getValues().add(value);
+                value.setValueSet(workingSet);
             }
             
             return result;

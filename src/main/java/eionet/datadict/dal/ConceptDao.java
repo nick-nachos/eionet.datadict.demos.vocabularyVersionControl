@@ -8,4 +8,6 @@ public interface ConceptDao {
     
     List<VocabularyConcept> getConcepts(Vocabulary vocabulary);
     
+    List<VocabularyConcept> getRelatedConcepts(Vocabulary vocabulary);
+    
 }
