@@ -14,6 +14,7 @@
                     BaseUri varchar(255) not null,
                     RegulationStatus tinyint not null,
                     -- more data columns here
+                    WorkItemId bigint,
                     primary key(Id)
             );
 
@@ -25,6 +26,7 @@
                     Definition text,
                     Status int,
                     -- more data columns here
+                    WorkItemId bigint,
                     primary key(Id)
             );
 
@@ -43,6 +45,7 @@
                     Identifier varchar(100),
                     DataType tinyint,
                     -- more data columns here
+                    WorkItemId bigint,
                     primary key(Id)
             );
 
@@ -52,6 +55,7 @@
                     `Value` Text,
                     fRelatedVocabularyConceptId bigint,
                     -- more data columns here
+                    WorkItemId bigint,
                     primary key(Id),
                     foreign key(fRelatedVocabularyConceptId) references VocabularyConcepts(Id)
             );
@@ -243,13 +247,28 @@
         <createIndex tableName="Vocabulary" indexName="Identifier">
             <column name="Identifier" />                                       
         </createIndex>
+        <createIndex tableName="Vocabulary" indexName="WorkItemId">
+            <column name="WorkItemId" />                                       
+        </createIndex>
+        
         <createIndex tableName="Concept" indexName="Identifier">
             <column name="Identifier" />                                       
+        </createIndex>
+        <createIndex tableName="Concept" indexName="WorkItemId">
+            <column name="WorkItemId" />                                       
         </createIndex>
         
         <createIndex tableName="ConceptAttribute" indexName="DataType">
             <column name="DataType" />                                       
         </createIndex>
+        <createIndex tableName="ConceptAttribute" indexName="WorkItemId">
+            <column name="WorkItemId" />                                       
+        </createIndex>
+        
+        <createIndex tableName="ConceptAttributeValue" indexName="WorkItemId">
+            <column name="WorkItemId" />                                       
+        </createIndex>
+        
         
     </changeSet>
     
