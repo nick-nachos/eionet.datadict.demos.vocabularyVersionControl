@@ -227,4 +227,29 @@
         </modifySql>
     </changeSet>
     
+    <changeSet id="rev-2" author="nakasnik">
+        <createIndex tableName="Revision" indexName="CreationDate">
+            <column name="CreationDate" />                                       
+        </createIndex>
+        
+        <createIndex tableName="VocabularyVersion" indexName="CommitDate">
+            <column name="CommitDate" />                                       
+        </createIndex>
+        <createIndex tableName="ConceptAttributeVersion" indexName="CommitDate">
+            <column name="CommitDate" />                                       
+        </createIndex>
+        
+        <createIndex tableName="Vocabulary" indexName="Identifier">
+            <column name="Identifier" />                                       
+        </createIndex>
+        <createIndex tableName="Concept" indexName="Identifier">
+            <column name="Identifier" />                                       
+        </createIndex>
+        
+        <createIndex tableName="ConceptAttribute" indexName="DataType">
+            <column name="DataType" />                                       
+        </createIndex>
+        
+    </changeSet>
+    
 </databaseChangeLog>
