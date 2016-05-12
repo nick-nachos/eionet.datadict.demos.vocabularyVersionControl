@@ -23,6 +23,7 @@
                     Notation varchar(100),
                     Label varchar(1000) not null,
                     Definition text,
+                    Status int,
                     -- more data columns here
                     primary key(Id)
             );
