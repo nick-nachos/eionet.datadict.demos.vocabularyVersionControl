@@ -57,7 +57,7 @@ public class ConceptAttributeValuesDaoImpl extends JdbcRepositoryBase implements
         String sql = this.resourceManager.getText("eionet.datadict.dal.impl.ConceptAttributeValuesDaoImpl.getConceptInternalLinks");
         Map<String, Object> parameters = this.createParametersMap();
         parameters.put("vocabularyId", vocabulary.getId());
-        parameters.put("dataType", DataType.LOCAL_REFERENCE.getValue());
+        parameters.put("dataType", DataType.REFERENCE.getValue());
         
         return this.getNamedParameterJdbcTemplate().query(sql, parameters, new LinkSetExtractor());
     }
@@ -158,8 +158,13 @@ public class ConceptAttributeValuesDaoImpl extends JdbcRepositoryBase implements
     
     protected static class LinkSetExtractor extends AttributeValueSetExtractorBase {
 
-        private Map<Long, Vocabulary> vocabularyCache;
-        private Map<Long, VocabularyConcept> conceptCache;
+        private final Map<Long, Vocabulary> vocabularyCache;
+        private final Map<Long, VocabularyConcept> conceptCache;
+        
+        public LinkSetExtractor() {
+            this.vocabularyCache = new HashMap<>();
+            this.conceptCache = new HashMap<>();
+        }
         
         @Override
         protected void setProperties(VocabularyConceptAttributeValue value, ResultSet rs) throws SQLException, DataAccessException {
