@@ -58,6 +58,10 @@ public class VocabularyDataServiceImpl implements VocabularyDataService {
     public List<Vocabulary> getLatestVocabularyEntries() {
         Revision latestRevision = this.revisionDao.getLatestRevision();
         
+        if (latestRevision == null) {
+            return new ArrayList<>();
+        }
+        
         return this.vocabularyDao.getVocabularies(latestRevision);
     }
 
@@ -65,7 +69,17 @@ public class VocabularyDataServiceImpl implements VocabularyDataService {
     @Transactional(readOnly = true)
     public Vocabulary getLatestVocabulary(String identifier) {
         Revision latestRevision = this.revisionDao.getLatestRevision();
+        
+        if (latestRevision == null) {
+            return null;
+        }
+        
         Vocabulary vocabulary = this.vocabularyDao.getVocabulary(latestRevision, identifier);
+        
+        if (vocabulary == null) {
+            return null;
+        }
+        
         this.linkVocabularyToConceptAttributes(vocabulary, this.conceptAttributeDao.getConceptAttributes(vocabulary));
         this.linkVocabularyToConcepts(vocabulary, this.conceptDao.getConcepts(vocabulary));
         this.linkConceptsToAttributeValues(vocabulary.getConcepts(), this.getConceptAttributeValues(vocabulary));
