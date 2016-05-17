@@ -9,11 +9,16 @@ import eionet.datadict.resx.EmbeddedResourceManager;
 import eionet.datadict.util.IterableUtils;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -36,6 +41,30 @@ public class VocabularyDaoImpl extends JdbcRepositoryBase implements VocabularyD
         return this.getNamedParameterJdbcTemplate().query(sql, parameters, new VocabularyRowMapper());
     }
 
+    @Override
+    public List<Vocabulary> getVocabularies(Set<Long> vocabularyIds) {
+        final int maxBatchSize = 80;
+        
+        List<Long> vocabularyIdsSorted = new ArrayList<>(vocabularyIds);
+        Collections.sort(vocabularyIdsSorted);
+        Long[] ids = vocabularyIdsSorted.toArray(new Long[vocabularyIdsSorted.size()]);
+        
+        String sql = this.resourceManager.getText("eionet.datadict.dal.impl.VocabularyDaoImpl.getVocabulariesByIds");
+        List<Vocabulary> result = new ArrayList<>(ids.length);
+        int index = 0;
+        
+        while (index < ids.length) {
+            int batchSize = Math.min(maxBatchSize, ids.length - index);
+            Long[] vocabularyIdBatch = Arrays.copyOfRange(ids, index, index + batchSize);
+            MapSqlParameterSource parameters = new MapSqlParameterSource();
+            parameters.addValue("vocabularyIds", Arrays.asList(vocabularyIdBatch));
+            result.addAll(this.getNamedParameterJdbcTemplate().query(sql, parameters, new VocabularyRowMapper()));
+            index += batchSize;
+        }
+        
+        return result;
+    }
+    
     @Override
     public Vocabulary getVocabulary(Long id) {
         String sql = this.resourceManager.getText("eionet.datadict.dal.impl.VocabularyDaoImpl.getVocabularyById");

@@ -6,6 +6,7 @@ import eionet.datadict.dal.ConceptDao;
 import eionet.datadict.dal.VocabularyDao;
 import eionet.datadict.dal.versioning.RevisionDao;
 import eionet.datadict.data.DataObjects;
+import eionet.datadict.data.LinkParentChildOptions;
 import eionet.datadict.model.ConceptAttribute;
 import eionet.datadict.model.Vocabulary;
 import eionet.datadict.model.VocabularyConcept;
@@ -29,6 +30,7 @@ import eionet.datadict.model.versioning.Revision;
 import eionet.datadict.services.data.VocabularyDataService;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,10 +98,9 @@ public class VocabularyDataServiceImpl implements VocabularyDataService {
     }
     
     protected void linkVocabularyToConcepts(Vocabulary vocabulary, List<VocabularyConcept> concepts) {
-        vocabulary.getConcepts().addAll(concepts);
-        
-        for (VocabularyConcept concept : vocabulary.getConcepts()) {
+        for (VocabularyConcept concept : concepts) {
             concept.setVocabulary(vocabulary);
+            vocabulary.getConcepts().add(concept);
         }
     }
     
@@ -152,6 +153,9 @@ public class VocabularyDataServiceImpl implements VocabularyDataService {
     private void linkInternalReferences(Vocabulary vocabulary, List<VocabularyConceptAttributeValueSet> internalRefs) {
         List<VocabularyConcept> relatedConcepts = this.conceptDao.getRelatedConcepts(vocabulary);
         List<Vocabulary> relatedVocabularies = this.vocabularyDao.getRelatedVocabularies(vocabulary);
+        LinkParentChildOptions linkOptions = new LinkParentChildOptions();
+        linkOptions.setParentListSorted(true);
+        linkOptions.setChildListSorted(true);
         DataObjects.linkParentChild(relatedVocabularies, relatedConcepts, new VocabularyToConceptLinker(), new VocabularyIdProvider(), new ConceptVocabularyIdProvider());
         
         this.linkReferences(relatedConcepts, internalRefs);
@@ -162,7 +166,8 @@ public class VocabularyDataServiceImpl implements VocabularyDataService {
         ConceptAttributeValueToRelatedConceptLinker linker = new ConceptAttributeValueToRelatedConceptLinker();
         RelatedConceptIdProvider parentKeyProvider = new RelatedConceptIdProvider();
         ConceptAttributeValueRelatedConceptIdProvider childKeyProvider = new ConceptAttributeValueRelatedConceptIdProvider();        
-        
+        LinkParentChildOptions linkOptions = new LinkParentChildOptions();
+        linkOptions.setParentListSorted(true);
         DataObjects.linkParentChild(relatedConcepts, disaggregatedRefs, linker, parentKeyProvider, childKeyProvider);
     }
     
@@ -190,6 +195,8 @@ public class VocabularyDataServiceImpl implements VocabularyDataService {
         ConceptToAttributeValueLinker linker = new ConceptToAttributeValueLinker();
         ConceptIdProvider parentKeyProvider = new ConceptIdProvider();
         ConceptAttributeValueConceptIdProvider childKeyProvider = new ConceptAttributeValueConceptIdProvider();
+        LinkParentChildOptions linkOptions = new LinkParentChildOptions();
+        linkOptions.setParentListSorted(true);
         DataObjects.linkParentChild(concepts, attributeValues, linker, parentKeyProvider, childKeyProvider);
     }
     
@@ -197,7 +204,13 @@ public class VocabularyDataServiceImpl implements VocabularyDataService {
         ConceptAttributeToAttributeValueLinker linker = new ConceptAttributeToAttributeValueLinker();
         ConceptAttributeIdProvider parentKeyProvider = new ConceptAttributeIdProvider();
         ConceptAttributeValueAttributeIdProvider childKeyProvider = new ConceptAttributeValueAttributeIdProvider();
-        DataObjects.linkParentChild(attributes, attributeValues, linker, parentKeyProvider, childKeyProvider);
+        Map<Long, ConceptAttribute> conceptAttributeMap = DataObjects.toMap(attributes, parentKeyProvider);
+        
+        for (VocabularyConceptAttributeValueSet valueSet : attributeValues) {
+            ConceptAttribute attribute = conceptAttributeMap.get(childKeyProvider.getKey(valueSet));
+            linker.link(attribute, valueSet);
+        }
+        
     }
     
 }

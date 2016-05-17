@@ -4,8 +4,10 @@ import eionet.datadict.util.ComparableComparator;
 import eionet.datadict.util.IterableUtils;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class DataObjects {
 
@@ -15,6 +17,16 @@ public class DataObjects {
     
     public static <K, V> void sort(List<K> objects, ObjectKeyProvider<K, V> keyProvider, Comparator<V> keyComparator) {
         Collections.sort(objects, new ObjectByKeyComparator<>(keyProvider, keyComparator));
+    }
+    
+    public static <K, V> Map<K, V> toMap(List<V> objects, ObjectKeyProvider<V, K> keyProvider) {
+        Map<K, V> result = new HashMap<>();
+        
+        for (V obj : objects) {
+            result.put(keyProvider.getKey(obj), obj);
+        }
+        
+        return result;
     }
     
     public static LinkParentChildOptions createDefaultLinkParentChildOptions() {

@@ -45,6 +45,9 @@
                     key="eionet.datadict.dal.impl.VocabularyDaoImpl.getVocabularies" 
                     value="sqls/vocabularydao/GetVocabulariesOfRevision.sql" />
                 <entry 
+                    key="eionet.datadict.dal.impl.VocabularyDaoImpl.getVocabulariesByIds" 
+                    value="sqls/vocabularydao/GetVocabulariesByIds.sql" />
+                <entry 
                     key="eionet.datadict.dal.impl.VocabularyDaoImpl.getVocabularyById" 
                     value="sqls/vocabularydao/GetVocabularyById.sql" />
                 <entry 
