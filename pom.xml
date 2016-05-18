@@ -203,11 +203,11 @@
                         <id>unzip seed data</id>
                         <phase>process-test-resources</phase>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <echo message="Extracting seed data" />
                                 <unzip src="target/test-classes/seed-data.sql.zip" 
                                        dest="target/test-classes" />
-                            </tasks>
+                            </target>
                         </configuration>
                         <goals>
                             <goal>run</goal>
