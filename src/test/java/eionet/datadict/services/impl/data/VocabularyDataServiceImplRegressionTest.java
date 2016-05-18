@@ -1,13 +1,26 @@
 package eionet.datadict.services.impl.data;
 
+import eionet.datadict.dal.ConceptAttributeDao;
+import eionet.datadict.dal.ConceptAttributeValuesDao;
+import eionet.datadict.dal.ConceptDao;
+import eionet.datadict.dal.VocabularyDao;
+import eionet.datadict.dal.versioning.RevisionDao;
 import eionet.datadict.model.Vocabulary;
 import eionet.datadict.model.testutil.VocabularyTestUtils;
 import eionet.datadict.services.data.VocabularyDataService;
+import eionet.datadict.testutil.ExecutionDurationHandler;
 import eionet.datadict.testutil.ExecutionDurationPrinter;
+import eionet.datadict.testutil.dal.ConceptAttributeDaoTestDecorator;
+import eionet.datadict.testutil.dal.ConceptAttributeValuesDaoTestDecorator;
+import eionet.datadict.testutil.dal.ConceptDaoTestDecorator;
+import eionet.datadict.testutil.dal.VocabularyDaoTestDecorator;
+import eionet.datadict.testutil.dal.versioning.RevisionDaoTestDecorator;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +32,46 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class VocabularyDataServiceImplRegressionTest {
     
     @Autowired
+    private RevisionDao revisionDao;
+    @Autowired
+    private VocabularyDao vocabularyDao;
+    @Autowired
+    private ConceptDao conceptDao;
+    @Autowired
+    private ConceptAttributeDao conceptAttributeDao;
+    @Autowired
+    private ConceptAttributeValuesDao conceptAttributeValuesDao;
+    
+    private RevisionDaoTestDecorator revisionDaoTestDecorator;
+    private VocabularyDaoTestDecorator vocabularyDaoTestDecorator;
+    private ConceptDaoTestDecorator conceptDaoTestDecorator;
+    private ConceptAttributeDaoTestDecorator conceptAttributeDaoTestDecorator;
+    private ConceptAttributeValuesDaoTestDecorator conceptAttributeValuesDaoTestDecorator;
+    
     private VocabularyDataService vocabularyDataService;
+    
+    @Before
+    public void setUp() {
+        this.revisionDaoTestDecorator = new RevisionDaoTestDecorator(revisionDao, new ExecutionDurationHandler());
+        this.vocabularyDaoTestDecorator = new VocabularyDaoTestDecorator(vocabularyDao, new ExecutionDurationHandler());
+        this.conceptDaoTestDecorator = new ConceptDaoTestDecorator(conceptDao, new ExecutionDurationHandler());
+        this.conceptAttributeDaoTestDecorator = new ConceptAttributeDaoTestDecorator(conceptAttributeDao, new ExecutionDurationHandler());
+        this.conceptAttributeValuesDaoTestDecorator = new ConceptAttributeValuesDaoTestDecorator(conceptAttributeValuesDao, new ExecutionDurationHandler());
+        
+        this.vocabularyDataService = new VocabularyDataServiceImpl(
+                vocabularyDaoTestDecorator, conceptDaoTestDecorator, conceptAttributeDaoTestDecorator, 
+                conceptAttributeValuesDaoTestDecorator, revisionDaoTestDecorator
+        );
+    }
+    
+    @After
+    public void tearDown() {
+        System.out.println(this.revisionDaoTestDecorator.serializeHandlerResults());
+        System.out.println(this.vocabularyDaoTestDecorator.serializeHandlerResults());
+        System.out.println(this.conceptDaoTestDecorator.serializeHandlerResults());
+        System.out.println(this.conceptAttributeDaoTestDecorator.serializeHandlerResults());
+        System.out.println(this.conceptAttributeValuesDaoTestDecorator.serializeHandlerResults());
+    }
     
     @Test
     public void testGetLatestVocabulary_Empty() {
