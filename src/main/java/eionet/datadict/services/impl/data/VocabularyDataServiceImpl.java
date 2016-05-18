@@ -28,8 +28,10 @@ import eionet.datadict.model.util.VocabularyToConceptLinker;
 import eionet.datadict.model.versioning.Revision;
 import eionet.datadict.services.data.VocabularyDataService;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -155,7 +157,7 @@ public class VocabularyDataServiceImpl implements VocabularyDataService {
     
     private void linkInternalReferences(Vocabulary vocabulary, List<VocabularyConceptAttributeValueSet> internalRefs) {
         List<VocabularyConcept> relatedConcepts = this.conceptDao.getRelatedConcepts(vocabulary);
-        List<Vocabulary> relatedVocabularies = this.vocabularyDao.getRelatedVocabularies(vocabulary);
+        List<Vocabulary> relatedVocabularies = this.getRelatedVocabularies(relatedConcepts);
         LinkParentChildOptions linkOptions = new LinkParentChildOptions();
         linkOptions.setParentListSorted(true);
         linkOptions.setChildListSorted(true);
@@ -211,6 +213,18 @@ public class VocabularyDataServiceImpl implements VocabularyDataService {
         
         values.clear();
         values.addAll(itermediateResult);
+    }
+    
+    private List<Vocabulary> getRelatedVocabularies(List<VocabularyConcept> relatedConcepts) {
+        Set<Long> relatedVocabularyIds = new HashSet<>();
+        
+        for (VocabularyConcept concept : relatedConcepts) {
+            for (VocabularyConceptAttributeValueSet valueSet : concept.getAttributeValues()) {
+                relatedVocabularyIds.add(valueSet.getConcept().getVocabulary().getId());
+            }
+        }
+        
+        return this.vocabularyDao.getVocabularies(relatedVocabularyIds);
     }
     
     protected void linkConceptsToAttributeValues(List<VocabularyConcept> concepts, List<VocabularyConceptAttributeValueSet> attributeValues) {
