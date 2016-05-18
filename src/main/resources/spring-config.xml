@@ -76,7 +76,7 @@
                     value="sqls/conceptattributevaluesdao/GetConceptLinks.sql" />
                 <entry 
                     key="eionet.datadict.dal.impl.ConceptAttributeValuesDaoImpl.getConceptInternalLinks" 
-                    value="sqls/conceptattributevaluesdao/GetConceptLinks.sql" />
+                    value="sqls/conceptattributevaluesdao/GetConceptInternalLinks.sql" />
                 <entry 
                     key="eionet.datadict.dal.impl.ConceptAttributeValuesDaoImpl.getConceptExternalLinks" 
                     value="sqls/conceptattributevaluesdao/GetConceptExternalLinks.sql" />

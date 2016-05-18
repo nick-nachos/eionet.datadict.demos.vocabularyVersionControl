@@ -128,6 +128,8 @@ public class VocabularyDataServiceImplRegressionTest {
         assertThat("Concept count missmatch", v.getConcepts().size(), is(196696));
         assertThat("Concept attribute value sets count missmatch", VocabularyTestUtils.countConceptAttributeValueSets(v), is(677024));
         assertThat("Concept attribute values count missmatch", VocabularyTestUtils.countConceptAttributeValues(v), is(677024));
+        
+        new GetLatestVocabularyExecutionDurationPrinter(vocabularyDataService, "wise.WaterBody").run();
     }
     
     private final class GetLatestVocabularyExecutionDurationPrinter extends ExecutionDurationPrinter<Vocabulary> {

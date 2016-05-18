@@ -27,6 +27,8 @@ import eionet.datadict.model.util.VocabularyIdProvider;
 import eionet.datadict.model.util.VocabularyToConceptLinker;
 import eionet.datadict.model.versioning.Revision;
 import eionet.datadict.services.data.VocabularyDataService;
+import eionet.datadict.util.IterableUtils;
+import eionet.datadict.util.Predicate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -86,7 +88,7 @@ public class VocabularyDataServiceImpl implements VocabularyDataService {
         
         this.linkVocabularyToConceptAttributes(vocabulary, this.conceptAttributeDao.getConceptAttributes(vocabulary));
         this.linkVocabularyToConcepts(vocabulary, this.conceptDao.getConcepts(vocabulary));
-        this.linkConceptsToAttributeValues(vocabulary.getConcepts(), this.getConceptAttributeValues(vocabulary));
+        this.linkConceptsToAttributeValues(vocabulary, this.getConceptAttributeValues(vocabulary));
         
         Map<Long, ConceptAttribute> conceptAttributeMap = DataObjects.toMap(vocabulary.getConceptAttributes(), new ConceptAttributeIdProvider());
         
@@ -152,28 +154,42 @@ public class VocabularyDataServiceImpl implements VocabularyDataService {
     }
     
     private void linkLocalReferences(Vocabulary vocabulary, List<VocabularyConceptAttributeValueSet> localRefs) {
-        this.linkReferences(vocabulary.getConcepts(), localRefs);
-    }
-    
-    private void linkInternalReferences(Vocabulary vocabulary, List<VocabularyConceptAttributeValueSet> internalRefs) {
-        List<VocabularyConcept> relatedConcepts = this.conceptDao.getRelatedConcepts(vocabulary);
-        List<Vocabulary> relatedVocabularies = this.getRelatedVocabularies(relatedConcepts);
-        LinkParentChildOptions linkOptions = new LinkParentChildOptions();
-        linkOptions.setParentListSorted(true);
-        linkOptions.setChildListSorted(true);
-        DataObjects.linkParentChild(relatedVocabularies, relatedConcepts, new VocabularyToConceptLinker(), new VocabularyIdProvider(), new ConceptVocabularyIdProvider());
-        
-        this.linkReferences(relatedConcepts, internalRefs);
-    }
-    
-    private void linkReferences(List<VocabularyConcept> relatedConcepts, List<VocabularyConceptAttributeValueSet> refs) {
-        List<VocabularyConceptAttributeValue> disaggregatedRefs = this.disaggregate(refs);
+        List<VocabularyConceptAttributeValue> disaggregatedRefs = this.disaggregate(localRefs);
         ConceptAttributeValueToRelatedConceptLinker linker = new ConceptAttributeValueToRelatedConceptLinker();
         RelatedConceptIdProvider parentKeyProvider = new RelatedConceptIdProvider();
         ConceptAttributeValueRelatedConceptIdProvider childKeyProvider = new ConceptAttributeValueRelatedConceptIdProvider();        
         LinkParentChildOptions linkOptions = new LinkParentChildOptions();
         linkOptions.setParentListSorted(true);
-        DataObjects.linkParentChild(relatedConcepts, disaggregatedRefs, linker, parentKeyProvider, childKeyProvider);
+        DataObjects.linkParentChild(vocabulary.getConcepts(), disaggregatedRefs, linker, parentKeyProvider, childKeyProvider, linkOptions);
+    }
+    
+    private void linkInternalReferences(final Vocabulary vocabulary, List<VocabularyConceptAttributeValueSet> internalRefs) {
+        List<Vocabulary> relatedVocabularies = this.getRelatedVocabularies(internalRefs);
+        int vocabularyIndex = IterableUtils.indexOf(relatedVocabularies, new Predicate<Vocabulary>() {
+
+            @Override
+            public boolean isMatch(Vocabulary obj) {
+                return obj.getId().equals(vocabulary.getId());
+            }
+        });
+        
+        if (vocabularyIndex > -1) {
+            relatedVocabularies.remove(vocabularyIndex);
+            this.linkLocalReferences(vocabulary, internalRefs);
+        }
+        
+        Map<Long, Vocabulary> relatedVocabularyMap = DataObjects.toMap(relatedVocabularies, new VocabularyIdProvider());
+        VocabularyToConceptLinker linker = new VocabularyToConceptLinker();
+        
+        for (VocabularyConceptAttributeValueSet valueSet : internalRefs) {
+            for (VocabularyConceptAttributeValue attributeValue : valueSet.getValues()) {
+                Long relatedVocabularyId = attributeValue.getRelatedConcept().getVocabulary().getId();
+            
+                if (relatedVocabularyMap.containsKey(relatedVocabularyId)) {
+                    linker.link(relatedVocabularyMap.get(relatedVocabularyId), attributeValue.getRelatedConcept());
+                }
+            }
+        }
     }
     
     private List<VocabularyConceptAttributeValue> disaggregate(List<VocabularyConceptAttributeValueSet> conceptAttributeValueSets) {
@@ -215,25 +231,25 @@ public class VocabularyDataServiceImpl implements VocabularyDataService {
         values.addAll(itermediateResult);
     }
     
-    private List<Vocabulary> getRelatedVocabularies(List<VocabularyConcept> relatedConcepts) {
+    private List<Vocabulary> getRelatedVocabularies(List<VocabularyConceptAttributeValueSet> internalRefs) {
         Set<Long> relatedVocabularyIds = new HashSet<>();
         
-        for (VocabularyConcept concept : relatedConcepts) {
-            for (VocabularyConceptAttributeValueSet valueSet : concept.getAttributeValues()) {
-                relatedVocabularyIds.add(valueSet.getConcept().getVocabulary().getId());
+        for (VocabularyConceptAttributeValueSet valueSet : internalRefs) {
+            for (VocabularyConceptAttributeValue attributeValue : valueSet.getValues()) {
+                relatedVocabularyIds.add(attributeValue.getRelatedConcept().getVocabulary().getId());
             }
         }
         
         return this.vocabularyDao.getVocabularies(relatedVocabularyIds);
     }
     
-    protected void linkConceptsToAttributeValues(List<VocabularyConcept> concepts, List<VocabularyConceptAttributeValueSet> attributeValues) {
+    protected void linkConceptsToAttributeValues(Vocabulary vocabulary, List<VocabularyConceptAttributeValueSet> attributeValues) {
         ConceptToAttributeValueLinker linker = new ConceptToAttributeValueLinker();
         ConceptIdProvider parentKeyProvider = new ConceptIdProvider();
         ConceptAttributeValueConceptIdProvider childKeyProvider = new ConceptAttributeValueConceptIdProvider();
         LinkParentChildOptions linkOptions = new LinkParentChildOptions();
         linkOptions.setParentListSorted(true);
-        DataObjects.linkParentChild(concepts, attributeValues, linker, parentKeyProvider, childKeyProvider);
+        DataObjects.linkParentChild(vocabulary.getConcepts(), attributeValues, linker, parentKeyProvider, childKeyProvider, linkOptions);
     }
     
     protected void linkConceptAttributesToAttributeValues(Map<Long, ConceptAttribute> conceptAttributeMap, List<VocabularyConceptAttributeValueSet> attributeValues) {
