@@ -1,6 +1,7 @@
 package eionet.datadict.services.impl.data;
 
 import eionet.datadict.model.Vocabulary;
+import eionet.datadict.model.testutil.VocabularyTestUtils;
 import eionet.datadict.services.data.VocabularyDataService;
 import eionet.datadict.testutil.ExecutionDurationPrinter;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,7 +33,9 @@ public class VocabularyDataServiceImplRegressionTest {
         Vocabulary v = new GetLatestVocabularyExecutionDurationPrinter(vocabularyDataService, "lcp.lcpcountries").run();
         
         assertThat(v, is(notNullValue()));
-        assertThat(v.getConcepts().size(), is(39));
+        assertThat("Concept count missmatch", v.getConcepts().size(), is(39));
+        assertThat("Concept attribute value sets count missmatch", VocabularyTestUtils.countConceptAttributeValueSets(v), is(28));
+        assertThat("Concept attribute values count missmatch", VocabularyTestUtils.countConceptAttributeValues(v), is(28));
     }
     
     @Test
@@ -40,7 +43,9 @@ public class VocabularyDataServiceImplRegressionTest {
         Vocabulary v = new GetLatestVocabularyExecutionDurationPrinter(vocabularyDataService, "cdda.designations").run();
         
         assertThat(v, is(notNullValue()));
-        assertThat(v.getConcepts().size(), is(614));
+        assertThat("Concept count missmatch", v.getConcepts().size(), is(614));
+        assertThat("Concept attribute value sets count missmatch", VocabularyTestUtils.countConceptAttributeValueSets(v), is(1228));
+        assertThat("Concept attribute values count missmatch", VocabularyTestUtils.countConceptAttributeValues(v), is(1228));
     }
     
     @Test
@@ -48,7 +53,9 @@ public class VocabularyDataServiceImplRegressionTest {
         Vocabulary v = new GetLatestVocabularyExecutionDurationPrinter(vocabularyDataService, "biodiversity.n2000species").run();
 
         assertThat(v, is(notNullValue()));
-        assertThat(v.getConcepts().size(), is(2940));
+        assertThat("Concept count missmatch", v.getConcepts().size(), is(2940));
+        assertThat("Concept attribute value sets count missmatch", VocabularyTestUtils.countConceptAttributeValueSets(v), is(3380));
+        assertThat("Concept attribute values count missmatch", VocabularyTestUtils.countConceptAttributeValues(v), is(3406));
     }
     
     @Test
@@ -56,7 +63,9 @@ public class VocabularyDataServiceImplRegressionTest {
         Vocabulary v = new GetLatestVocabularyExecutionDurationPrinter(vocabularyDataService, "lau2.fr").run();
         
         assertThat(v, is(notNullValue()));
-        assertThat(v.getConcepts().size(), is(36682));
+        assertThat("Concept count missmatch", v.getConcepts().size(), is(36682));
+        assertThat("Concept attribute value sets count missmatch", VocabularyTestUtils.countConceptAttributeValueSets(v), is(36682));
+        assertThat("Concept attribute values count missmatch", VocabularyTestUtils.countConceptAttributeValues(v), is(36682));
     }
     
     @Test
@@ -64,7 +73,9 @@ public class VocabularyDataServiceImplRegressionTest {
         Vocabulary v = new GetLatestVocabularyExecutionDurationPrinter(vocabularyDataService, "wise.WaterBody").run();
         
         assertThat(v, is(notNullValue()));
-        assertThat(v.getConcepts().size(), is(196696));
+        assertThat("Concept count missmatch", v.getConcepts().size(), is(196696));
+        assertThat("Concept attribute value sets count missmatch", VocabularyTestUtils.countConceptAttributeValueSets(v), is(677024));
+        assertThat("Concept attribute values count missmatch", VocabularyTestUtils.countConceptAttributeValues(v), is(677024));
     }
     
     private final class GetLatestVocabularyExecutionDurationPrinter extends ExecutionDurationPrinter<Vocabulary> {
