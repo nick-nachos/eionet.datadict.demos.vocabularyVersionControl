@@ -136,14 +136,14 @@
                 <directory>src/test/resources</directory>
                 <filtering>true</filtering>
                 <excludes>
-                    <exclude>seed-data.sql</exclude>
+                    <exclude>seed-data.sql.zip</exclude>
                 </excludes>
             </testResource>
             <testResource>
                 <directory>src/test/resources</directory>
                 <filtering>false</filtering>
                 <includes>
-                    <include>seed-data.sql</include>
+                    <include>seed-data.sql.zip</include>
                 </includes>
             </testResource>
         </testResources>
@@ -194,6 +194,28 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>unzip seed data</id>
+                        <phase>process-test-resources</phase>
+                        <configuration>
+                            <tasks>
+                                <echo message="Extracting seed data" />
+                                <unzip src="target/test-classes/seed-data.sql.zip" 
+                                       dest="target/test-classes" />
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
         </plugins>
     </build>
     
