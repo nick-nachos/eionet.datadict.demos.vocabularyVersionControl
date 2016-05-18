@@ -40,7 +40,7 @@ public class ConceptAttributeValuesDaoImpl extends JdbcRepositoryBase implements
         parameters.put("localRefType", DataType.LOCAL_REFERENCE.getValue());
         parameters.put("refType", DataType.REFERENCE.getValue());
         
-        return this.getNamedParameterJdbcTemplate().query(sql, parameters, new AttributeValueSetExtractor());
+        return this.getNamedParameterJdbcTemplate().query(sql, parameters, new TextValueSetExtractor());
     }
 
     @Override
@@ -48,9 +48,10 @@ public class ConceptAttributeValuesDaoImpl extends JdbcRepositoryBase implements
         String sql = this.resourceManager.getText("eionet.datadict.dal.impl.ConceptAttributeValuesDaoImpl.getConceptLocalLinks");
         Map<String, Object> parameters = this.createParametersMap();
         parameters.put("vocabularyId", vocabulary.getId());
-        parameters.put("dataType", DataType.LOCAL_REFERENCE.getValue());
+        parameters.put("localRefType", DataType.LOCAL_REFERENCE.getValue());
+        parameters.put("refType", DataType.REFERENCE.getValue());
         
-        return this.getNamedParameterJdbcTemplate().query(sql, parameters, new LocalLinkSetExtractor());
+        return this.getNamedParameterJdbcTemplate().query(sql, parameters, new LinkValueSetExtractor());
     }
 
     @Override
@@ -60,7 +61,7 @@ public class ConceptAttributeValuesDaoImpl extends JdbcRepositoryBase implements
         parameters.put("vocabularyId", vocabulary.getId());
         parameters.put("refType", DataType.REFERENCE.getValue());
         
-        return this.getNamedParameterJdbcTemplate().query(sql, parameters, new InternalLinkSetExtractor());
+        return this.getNamedParameterJdbcTemplate().query(sql, parameters, new LinkValueSetExtractor());
     }
 
     @Override
@@ -70,7 +71,7 @@ public class ConceptAttributeValuesDaoImpl extends JdbcRepositoryBase implements
         parameters.put("vocabularyId", vocabulary.getId());
         parameters.put("refType", DataType.REFERENCE.getValue());
         
-        return this.getNamedParameterJdbcTemplate().query(sql, parameters, new AttributeValueSetExtractor());
+        return this.getNamedParameterJdbcTemplate().query(sql, parameters, new TextValueSetExtractor());
     }
     
     protected static abstract class AttributeValueSetExtractorBase implements ResultSetExtractor<List<VocabularyConceptAttributeValueSet>> {
@@ -146,7 +147,7 @@ public class ConceptAttributeValuesDaoImpl extends JdbcRepositoryBase implements
         
     }
     
-    protected static class AttributeValueSetExtractor extends AttributeValueSetExtractorBase {
+    protected static class TextValueSetExtractor extends AttributeValueSetExtractorBase {
 
         @Override
         protected void setProperties(VocabularyConceptAttributeValue value, ResultSet rs) throws SQLException, DataAccessException {
@@ -157,12 +158,12 @@ public class ConceptAttributeValuesDaoImpl extends JdbcRepositoryBase implements
         
     }
     
-    protected static abstract class LinkSetExtractorBase extends AttributeValueSetExtractorBase {
+    protected static class LinkValueSetExtractor extends AttributeValueSetExtractorBase {
 
         private final Map<Long, Vocabulary> vocabularyCache;
         private final Map<Long, VocabularyConcept> conceptCache;
         
-        public LinkSetExtractorBase() {
+        public LinkValueSetExtractor() {
             this.vocabularyCache = new HashMap<>();
             this.conceptCache = new HashMap<>();
         }
@@ -190,31 +191,8 @@ public class ConceptAttributeValuesDaoImpl extends JdbcRepositoryBase implements
             }
             
             relatedConcept.setVocabulary(this.vocabularyCache.get(relatedVocabularyId));
-            this.setRelatedConceptProperties(relatedConcept, rs);
             conceptCache.put(relatedConceptId, relatedConcept);
             value.setRelatedConcept(relatedConcept);
-        }
-        
-        protected abstract void setRelatedConceptProperties(VocabularyConcept relatedConcept, ResultSet rs) throws SQLException;
-        
-    }
-    
-    protected static class LocalLinkSetExtractor extends LinkSetExtractorBase {
-
-        @Override
-        protected void setRelatedConceptProperties(VocabularyConcept relatedConcept, ResultSet rs) throws SQLException { }
-        
-    }
-    
-    protected static class InternalLinkSetExtractor extends LinkSetExtractorBase {
-
-        @Override
-        protected void setRelatedConceptProperties(VocabularyConcept relatedConcept, ResultSet rs) throws SQLException {
-            relatedConcept.setIdentifier(rs.getString("RelatedConceptIdentifier"));
-            relatedConcept.setNotation(rs.getString("RelatedConceptNotation"));
-            relatedConcept.setLabel(rs.getString("RelatedConceptLabel"));
-            relatedConcept.setStatus(StandardGenericStatus.fromValue(rs.getInt("RelatedConceptStatus")));
-            relatedConcept.setDefinition(rs.getString("RelatedConceptIdentifier"));
         }
         
     }

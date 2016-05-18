@@ -21,14 +21,11 @@ import eionet.datadict.model.util.ConceptAttributeValueRelatedConceptIdProvider;
 import eionet.datadict.model.util.ConceptAttributeValueToRelatedConceptLinker;
 import eionet.datadict.model.util.ConceptIdProvider;
 import eionet.datadict.model.util.ConceptToAttributeValueLinker;
-import eionet.datadict.model.util.ConceptVocabularyIdProvider;
 import eionet.datadict.model.util.RelatedConceptIdProvider;
 import eionet.datadict.model.util.VocabularyIdProvider;
 import eionet.datadict.model.util.VocabularyToConceptLinker;
 import eionet.datadict.model.versioning.Revision;
 import eionet.datadict.services.data.VocabularyDataService;
-import eionet.datadict.util.IterableUtils;
-import eionet.datadict.util.Predicate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -129,12 +126,7 @@ public class VocabularyDataServiceImpl implements VocabularyDataService {
         
         List<VocabularyConceptAttributeValueSet> values = new ArrayList<>();
         
-        if (hasOther) {
-            List<VocabularyConceptAttributeValueSet> simpleValues = this.conceptAttributeValuesDao.getConceptAttributeValues(vocabulary);
-            values.addAll(simpleValues);
-        }
-        
-        if (hasLocalRefs) {
+        if (hasLocalRefs || hasRefs) {
             List<VocabularyConceptAttributeValueSet> localRefs = this.conceptAttributeValuesDao.getConceptLocalLinks(vocabulary);
             this.linkLocalReferences(vocabulary, localRefs);
             values.addAll(localRefs);
@@ -143,41 +135,29 @@ public class VocabularyDataServiceImpl implements VocabularyDataService {
         if (hasRefs) {
             List<VocabularyConceptAttributeValueSet> refs = this.conceptAttributeValuesDao.getConceptInternalLinks(vocabulary);
             this.linkInternalReferences(vocabulary, refs);
-            
-            refs.addAll(this.conceptAttributeValuesDao.getConceptExternalLinks(vocabulary));
-            
-            this.mergeAttributeValues(refs);
             values.addAll(refs);
+            values.addAll(this.conceptAttributeValuesDao.getConceptExternalLinks(vocabulary));
+        }
+        
+        this.mergeAttributeValues(values);
+        
+        if (hasOther) {
+            List<VocabularyConceptAttributeValueSet> simpleValues = this.conceptAttributeValuesDao.getConceptAttributeValues(vocabulary);
+            values.addAll(simpleValues);
         }
         
         return values;
     }
     
     private void linkLocalReferences(Vocabulary vocabulary, List<VocabularyConceptAttributeValueSet> localRefs) {
-        List<VocabularyConceptAttributeValue> disaggregatedRefs = this.disaggregate(localRefs);
-        ConceptAttributeValueToRelatedConceptLinker linker = new ConceptAttributeValueToRelatedConceptLinker();
-        RelatedConceptIdProvider parentKeyProvider = new RelatedConceptIdProvider();
-        ConceptAttributeValueRelatedConceptIdProvider childKeyProvider = new ConceptAttributeValueRelatedConceptIdProvider();        
-        LinkParentChildOptions linkOptions = new LinkParentChildOptions();
-        linkOptions.setParentListSorted(true);
-        DataObjects.linkParentChild(vocabulary.getConcepts(), disaggregatedRefs, linker, parentKeyProvider, childKeyProvider, linkOptions);
+        this.linkReferences(localRefs, vocabulary.getConcepts());
     }
     
-    private void linkInternalReferences(final Vocabulary vocabulary, List<VocabularyConceptAttributeValueSet> internalRefs) {
+    private void linkInternalReferences(Vocabulary vocabulary, List<VocabularyConceptAttributeValueSet> internalRefs) {
+        List<VocabularyConcept> relatedConcepts = this.conceptDao.getRelatedConcepts(vocabulary);
+        this.linkReferences(internalRefs, relatedConcepts);
+        
         List<Vocabulary> relatedVocabularies = this.getRelatedVocabularies(internalRefs);
-        int vocabularyIndex = IterableUtils.indexOf(relatedVocabularies, new Predicate<Vocabulary>() {
-
-            @Override
-            public boolean isMatch(Vocabulary obj) {
-                return obj.getId().equals(vocabulary.getId());
-            }
-        });
-        
-        if (vocabularyIndex > -1) {
-            relatedVocabularies.remove(vocabularyIndex);
-            this.linkLocalReferences(vocabulary, internalRefs);
-        }
-        
         Map<Long, Vocabulary> relatedVocabularyMap = DataObjects.toMap(relatedVocabularies, new VocabularyIdProvider());
         VocabularyToConceptLinker linker = new VocabularyToConceptLinker();
         
@@ -190,6 +170,16 @@ public class VocabularyDataServiceImpl implements VocabularyDataService {
                 }
             }
         }
+    }
+    
+    private void linkReferences(List<VocabularyConceptAttributeValueSet> references, List<VocabularyConcept> relatedConcepts) {
+        List<VocabularyConceptAttributeValue> disaggregatedRefs = this.disaggregate(references);
+        ConceptAttributeValueToRelatedConceptLinker linker = new ConceptAttributeValueToRelatedConceptLinker();
+        RelatedConceptIdProvider parentKeyProvider = new RelatedConceptIdProvider();
+        ConceptAttributeValueRelatedConceptIdProvider childKeyProvider = new ConceptAttributeValueRelatedConceptIdProvider();        
+        LinkParentChildOptions linkOptions = new LinkParentChildOptions();
+        linkOptions.setParentListSorted(true);
+        DataObjects.linkParentChild(relatedConcepts, disaggregatedRefs, linker, parentKeyProvider, childKeyProvider, linkOptions);
     }
     
     private List<VocabularyConceptAttributeValue> disaggregate(List<VocabularyConceptAttributeValueSet> conceptAttributeValueSets) {

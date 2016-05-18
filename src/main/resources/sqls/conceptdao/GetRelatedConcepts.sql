@@ -1,9 +1,9 @@
 
 select
-    vc.fVocabularyId,
-    c.*
+    relvc.fVocabularyId,
+    relc.*
 from (
-    select distinct 
+    select distinct
         cav.fRelatedVocabularyConceptId
     from
         VocabularyConcepts vc
@@ -17,7 +17,7 @@ from (
         vca.fConceptAttributeId = ca.Id
     inner join
         VocabularyConceptAttributeValues vcav
-    on 
+    on
         vc.Id = vcav.fVocabularyConceptId and vca.Id = vcav.fVocabularyConceptAttributeId
     inner join
         ConceptAttributeValue cav
@@ -25,14 +25,14 @@ from (
         vcav.fConceptAttributeValueId = cav.Id
     where
         vc.fVocabularyId = :vocabularyId and ca.DataType = :refType
-) relvc
+) cav
 inner join
-    VocabularyConcepts vc
-on 
-    relvc.fRelatedVocabularyConceptId = vc.Id
-inner join
-    Concept c
+    VocabularyConcepts relvc
 on
-    vc.fConceptId = c.Id
+    cav.fRelatedVocabularyConceptId = relvc.Id
+inner join
+    Concept relc
+on
+    relvc.fVocabularyId <> :vocabularyId and relvc.fConceptId = relc.Id
 order by
-    vc.fVocabularyId, c.Id
+    relvc.fVocabularyId, relc.Id
