@@ -29,10 +29,10 @@ from (
 inner join
     VocabularyConcepts relvc
 on
-    cav.fRelatedVocabularyConceptId = relvc.Id
+    relvc.fVocabularyId <> :vocabularyId and cav.fRelatedVocabularyConceptId = relvc.Id
 inner join
     Concept relc
 on
-    relvc.fVocabularyId <> :vocabularyId and relvc.fConceptId = relc.Id
+    relvc.fConceptId = relc.Id
 order by
     relvc.fVocabularyId, relc.Id
