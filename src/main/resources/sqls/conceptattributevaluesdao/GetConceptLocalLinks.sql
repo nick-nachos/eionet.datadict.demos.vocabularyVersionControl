@@ -1,4 +1,3 @@
-
 select
     vc.fConceptId,
     vca.fConceptAttributeId,
@@ -10,17 +9,19 @@ select
 from
     VocabularyConcepts vc
 inner join
+    VocabularyConceptAttributeValues vcav
+on
+    vc.Id = vcav.fVocabularyConceptId
+inner join
     VocabularyConceptAttributes vca
 on
-    vc.fVocabularyId = vca.fVocabularyId
+    vca.Id = vcav.fVocabularyConceptAttributeId
+/*
 inner join
     ConceptAttribute ca
 on
     vca.fConceptAttributeId = ca.Id
-inner join
-    VocabularyConceptAttributeValues vcav
-on
-    vc.Id = vcav.fVocabularyConceptId and vca.Id = vcav.fVocabularyConceptAttributeId
+*/
 inner join
     ConceptAttributeValue cav
 on
@@ -30,6 +31,6 @@ inner join
 on
     cav.fRelatedVocabularyConceptId = relvc.Id
 where
-    vc.fVocabularyId = :vocabularyId and ca.DataType in (:localRefType, :refType) and relvc.fVocabularyId = :vocabularyId
+    vc.fVocabularyId = :vocabularyId /* and ca.DataType in (:localRefType, :refType) */ and relvc.fVocabularyId = :vocabularyId
 order by
     vc.fConceptId, vca.fConceptAttributeId

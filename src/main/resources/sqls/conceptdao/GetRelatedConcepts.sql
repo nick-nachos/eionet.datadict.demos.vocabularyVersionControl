@@ -8,17 +8,17 @@ from (
     from
         VocabularyConcepts vc
     inner join
+        VocabularyConceptAttributeValues vcav
+    on
+        vc.Id = vcav.fVocabularyConceptId
+    inner join
         VocabularyConceptAttributes vca
     on
-        vc.fVocabularyId = vca.fVocabularyId
+        vca.Id = vcav.fVocabularyConceptAttributeId
     inner join
         ConceptAttribute ca
     on
         vca.fConceptAttributeId = ca.Id
-    inner join
-        VocabularyConceptAttributeValues vcav
-    on
-        vc.Id = vcav.fVocabularyConceptId and vca.Id = vcav.fVocabularyConceptAttributeId
     inner join
         ConceptAttributeValue cav
     on

@@ -9,12 +9,12 @@ from
     VocabularyConcepts vc
 inner join
     VocabularyConceptAttributeValues vcav
-on 
+on
     vc.Id = vcav.fVocabularyConceptId
 inner join
     VocabularyConceptAttributes vca
 on
-    vcav.fVocabularyConceptAttributeId = vca.Id
+    vca.Id = vcav.fVocabularyConceptAttributeId
 inner join
     ConceptAttribute ca
 on
