@@ -9,10 +9,10 @@
         <sql endDelimiter=";" splitStatements="true" stripComments="true">
             create table Vocabulary (
                     Id bigint auto_increment,
+                    RegulationStatus tinyint not null,
                     Identifier varchar(100) not null,
                     Label varchar(255) not null,
                     BaseUri varchar(255) not null,
-                    RegulationStatus tinyint not null,
                     -- more data columns here
                     WorkItemId bigint,
                     primary key(Id)
@@ -20,11 +20,11 @@
 
             create table Concept (
                     Id bigint auto_increment,
+                    Status int not null,
                     Identifier varchar(100) not null,
-                    Notation varchar(100),
                     Label varchar(1000) not null,
+                    Notation varchar(100),
                     Definition text,
-                    Status int,
                     -- more data columns here
                     WorkItemId bigint,
                     primary key(Id)
@@ -42,8 +42,8 @@
 
             create table ConceptAttribute (
                     Id bigint auto_increment,
-                    Identifier varchar(100),
-                    DataType tinyint,
+                    DataType tinyint not null,
+                    Identifier varchar(100) not null,
                     -- more data columns here
                     WorkItemId bigint,
                     primary key(Id)
@@ -51,9 +51,9 @@
 
             create table ConceptAttributeValue (
                     Id bigint auto_increment,
+                    fRelatedVocabularyConceptId bigint,
                     `Language` varchar(10),
                     `Value` Text,
-                    fRelatedVocabularyConceptId bigint,
                     -- more data columns here
                     WorkItemId bigint,
                     primary key(Id),
@@ -72,11 +72,11 @@
 
             create table VocabularyConceptAttributeValues (
                     Id bigint auto_increment,
-                    fVocabularyConceptAttributeId bigint not null,
                     fVocabularyConceptId bigint not null,
+                    fVocabularyConceptAttributeId bigint not null,
                     fConceptAttributeValueId bigint not null,
                     primary key(Id),
-                    unique(fVocabularyConceptAttributeId, fVocabularyConceptId, fConceptAttributeValueId),
+                    unique(fVocabularyConceptId, fVocabularyConceptAttributeId, fConceptAttributeValueId),
                     foreign key(fVocabularyConceptAttributeId) references VocabularyConceptAttributes(Id),
                     foreign key(fVocabularyConceptId) references VocabularyConcepts(Id),
                     foreign key(fConceptAttributeValueId) references ConceptAttributeValue(Id)
@@ -111,8 +111,8 @@
             create table Revision (
                     Id bigint auto_increment,
                     CreationDate bigint not null,
-                    UserName varchar(100) not null,
                     fParentRevisionId bigint,
+                    UserName varchar(100) not null,
                     primary key(Id),
                     foreign key(fParentRevisionId) references Revision(Id)
             );
