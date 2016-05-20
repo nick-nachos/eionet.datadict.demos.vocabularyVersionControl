@@ -300,3 +300,27 @@ inner join (
 		VersionControlTest.Revision
 ) r
 ;
+
+update
+	VersionControlTest.Vocabulary
+set
+	WorkItemId = null
+;
+
+update
+	VersionControlTest.Concept
+set
+	WorkItemId = null
+;
+
+update
+	VersionControlTest.ConceptAttribute
+set
+	WorkItemId = null
+;
+
+update
+	VersionControlTest.ConceptAttributeValue
+set
+	WorkItemId = null
+;
