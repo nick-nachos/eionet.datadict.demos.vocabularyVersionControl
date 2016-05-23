@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:c="http://www.springframework.org/schema/c"
+        xmlns:context="http://www.springframework.org/schema/context"
+
+        xsi:schemaLocation="
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+        ">
+
+    <bean id="testResourceMap" name="testResourceMap" class="java.util.HashMap">
+        <constructor-arg>
+            <map>
+                <entry 
+                    key="eionet.datadict.dal.impl.util.TestAssistanceDao.newVocabulariesByCopy" 
+                    value="sqls/testassistancedao/NewVocabulariesByCopy.sql" />
+                <entry 
+                    key="eionet.datadict.dal.impl.util.TestAssistanceDao.linkVocabulariesToConcepts" 
+                    value="sqls/testassistancedao/LinkVocabulariesToConcepts.sql" />
+                <entry 
+                    key="eionet.datadict.dal.impl.util.TestAssistanceDao.linkVocabulariesToConceptAttributes" 
+                    value="sqls/testassistancedao/LinkVocabulariesToConceptAttributes.sql" />
+                <entry 
+                    key="eionet.datadict.dal.impl.util.TestAssistanceDao.linkConceptsToAttributeValues" 
+                    value="sqls/testassistancedao/LinkConceptsToAttributeValues.sql" />
+                <entry 
+                    key="eionet.datadict.dal.impl.util.TestAssistanceDao.createVocabularyVersions" 
+                    value="sqls/testassistancedao/CreateVocabularyVersions.sql" />
+                <entry 
+                    key="eionet.datadict.dal.impl.util.TestAssistanceDao.createRevisions" 
+                    value="sqls/testassistancedao/CreateRevisions.sql" />
+                <entry 
+                    key="eionet.datadict.dal.impl.util.TestAssistanceDao.linkRevisions" 
+                    value="sqls/testassistancedao/LinkRevisions.sql" />
+                <entry 
+                    key="eionet.datadict.dal.impl.util.TestAssistanceDao.linkRevisionsToVocabularyVersions" 
+                    value="sqls/testassistancedao/LinkRevisionsToVocabularyVersions.sql" />
+                <entry 
+                    key="eionet.datadict.dal.impl.util.TestAssistanceDao.linkRevisionsToConceptAttributeVersions" 
+                    value="sqls/testassistancedao/LinkRevisionsToConceptAttributeVersions.sql" />
+                <entry 
+                    key="eionet.datadict.dal.impl.util.TestAssistanceDao.clearWorkingState" 
+                    value="sqls/testassistancedao/ClearWorkingState.sql" />
+                
+                <!--
+                <entry 
+                    key="eionet.datadict.dal.impl.util.TestAssistanceDao.newVocabularyByCopy" 
+                    value="sqls/testassistancedao/NewVocabularyByCopy.sql" />
+                <entry 
+                    key="eionet.datadict.dal.impl.util.TestAssistanceDao.getVocabularyIdByWorkItem" 
+                    value="sqls/testassistancedao/GetVocabularyIdByWorkItem.sql" />
+                <entry 
+                    key="eionet.datadict.dal.impl.util.TestAssistanceDao.linkToConcepts" 
+                    value="sqls/testassistancedao/LinkToConcepts.sql" />
+                <entry 
+                    key="eionet.datadict.dal.impl.util.TestAssistanceDao.linkToConceptAttributes" 
+                    value="sqls/testassistancedao/LinkToConceptAttributes.sql" />
+                <entry 
+                    key="eionet.datadict.dal.impl.util.TestAssistanceDao.linkToConceptAttributeValues" 
+                    value="sqls/testassistancedao/LinkToConceptAttributeValues.sql" />
+                <entry 
+                    key="eionet.datadict.dal.impl.util.TestAssistanceDao.createVocabularyVersion" 
+                    value="sqls/testassistancedao/CreateVocabularyVersion.sql" />
+                <entry 
+                    key="eionet.datadict.dal.impl.util.TestAssistanceDao.newRevision" 
+                    value="sqls/testassistancedao/NewRevision.sql" />
+                <entry 
+                    key="eionet.datadict.dal.impl.util.TestAssistanceDao.linkRevisionToVocabularyVersions" 
+                    value="sqls/testassistancedao/LinkRevisionToVocabularyVersions.sql" />
+                <entry 
+                    key="eionet.datadict.dal.impl.util.TestAssistanceDao.linkRevisionToConceptAttributeVersions" 
+                    value="sqls/testassistancedao/LinkRevisionToConceptAttributeVersions.sql" />
+                <entry 
+                    key="eionet.datadict.dal.impl.util.TestAssistanceDao.resetVocabularyWorkState" 
+                    value="sqls/testassistancedao/ResetVocabularyWorkState.sql" />
+                -->
+            </map>
+        </constructor-arg>
+    </bean>
+    
+</beans>

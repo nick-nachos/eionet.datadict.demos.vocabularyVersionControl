@@ -53,7 +53,7 @@ public class VocabularyDataServiceImplRegressionTest {
     private ConceptAttributeDaoTestDecorator conceptAttributeDaoTestDecorator;
     private ConceptAttributeValuesDaoTestDecorator conceptAttributeValuesDaoTestDecorator;
     
-    private VocabularyDataService vocabularyDataService;
+    protected VocabularyDataService vocabularyDataService;
     
     @Before
     public void setUp() {
