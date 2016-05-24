@@ -3,8 +3,9 @@ package eionet.datadict.dal.impl.versioning;
 import eionet.datadict.dal.versioning.RevisionDao;
 import eionet.datadict.model.versioning.Revision;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
-import org.joda.time.DateTime;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,18 +21,12 @@ public class RevisionDaoImplTest {
     
     @Test
     public void testGetLatestRevision() {
-        Revision r = this.revisionDao.getLatestRevision();
-        Revision expected = this.createExpectedLatestRevision();
-        assertThat(r, samePropertyValuesAs(expected));
-    }
-    
-    private Revision createExpectedLatestRevision() {
-        Revision r = new Revision();
-        r.setId(1L);
-        r.setUserName("testuser");
-        r.setCreationDate(new DateTime(1463034600000L));
-        
-        return r;
+        Revision actual = this.revisionDao.getLatestRevision();
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getId(), is(notNullValue()));
+        assertThat(actual.getUserName(), is("testuser"));
+        assertThat(actual.getCreationDate(), is(notNullValue()));
+        assertThat(actual.getCreationDate().getMillis(), is(greaterThanOrEqualTo(1463034600000L)));
     }
     
 }

@@ -44,6 +44,9 @@ public class VocabularyDaoImplTest {
         Vocabulary expected = this.createExpectedVocabulary();
         Vocabulary actual = this.vocabularyDao.getVocabulary(r, expected.getIdentifier());
         assertThat(actual, is(notNullValue()));
+        assertThat(actual.getId(), is(notNullValue()));
+        expected.setId(null);
+        actual.setId(null);
         assertThat(actual, samePropertyValuesAs(expected));
         
         actual = this.vocabularyDao.getVocabulary(r, "some.identifier.that.does.not.exist");
