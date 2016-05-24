@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@ContextConfiguration(locations = { "classpath:spring-config.xml" })
+@ContextConfiguration(locations = { "classpath:spring-config.xml", "classpath:spring-test-config.xml" })
 @RunWith(SpringJUnit4ClassRunner.class)
 public class RevisionDaoImplTest {
     

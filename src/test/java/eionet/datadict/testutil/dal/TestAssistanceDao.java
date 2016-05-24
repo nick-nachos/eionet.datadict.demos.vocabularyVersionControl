@@ -1,15 +1,19 @@
-package eionet.datadict.dal.impl.util;
+package eionet.datadict.testutil.dal;
 
 import eionet.datadict.dal.impl.JdbcRepositoryBase;
 import eionet.datadict.resx.EmbeddedResourceManager;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class TestAssistanceDao extends JdbcRepositoryBase {
 
     private final EmbeddedResourceManager resourceManager;
     
+    @Autowired
     public TestAssistanceDao(DataSource dataSource, EmbeddedResourceManager resourceManager) {
         super(dataSource);
         this.resourceManager = resourceManager;

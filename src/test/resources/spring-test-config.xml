@@ -4,15 +4,17 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns:c="http://www.springframework.org/schema/c"
         xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:util="http://www.springframework.org/schema/util"
 
         xsi:schemaLocation="
             http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.2.xsd
         ">
-
-    <bean id="testResourceMap" name="testResourceMap" class="java.util.HashMap">
-        <constructor-arg>
-            <map>
+    
+    <bean id="testResourceMap" parent="resourceMap" class="org.springframework.beans.factory.config.MapFactoryBean">
+        <property name="sourceMap">
+            <map merge="true">
                 <entry 
                     key="eionet.datadict.dal.impl.util.TestAssistanceDao.newVocabulariesByCopy" 
                     value="sqls/testassistancedao/NewVocabulariesByCopy.sql" />
@@ -43,7 +45,7 @@
                 <entry 
                     key="eionet.datadict.dal.impl.util.TestAssistanceDao.clearWorkingState" 
                     value="sqls/testassistancedao/ClearWorkingState.sql" />
-                
+
                 <!--
                 <entry 
                     key="eionet.datadict.dal.impl.util.TestAssistanceDao.newVocabularyByCopy" 
@@ -77,7 +79,11 @@
                     value="sqls/testassistancedao/ResetVocabularyWorkState.sql" />
                 -->
             </map>
-        </constructor-arg>
+        </property>
+    </bean>
+    
+    <bean id="resxManager" class="eionet.datadict.resx.EmbeddedResourceManager">
+        <constructor-arg name="resourceMappings" ref="testResourceMap" />
     </bean>
     
 </beans>

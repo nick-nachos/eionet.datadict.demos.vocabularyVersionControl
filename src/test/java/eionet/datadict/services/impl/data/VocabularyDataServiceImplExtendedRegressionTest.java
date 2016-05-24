@@ -1,11 +1,7 @@
 package eionet.datadict.services.impl.data;
 
-import eionet.datadict.dal.impl.util.TestAssistanceDao;
-import eionet.datadict.resx.EmbeddedResourceManager;
 import eionet.datadict.testutil.ExecutionDurationPrinter;
-import java.util.Map;
-import javax.annotation.Resource;
-import javax.sql.DataSource;
+import eionet.datadict.testutil.services.data.SeedDataExpanderService;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -19,15 +15,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class VocabularyDataServiceImplExtendedRegressionTest extends VocabularyDataServiceImplRegressionTest {
     
-    private static TestAssistanceDao testAssistanceDao;
+    private static SeedDataExpanderService seedDataExpanderService;
     
     private static boolean dbSetupDone;
     
     @Autowired
-    private DataSource dataSource;
-    
-    @Resource(name = "testResourceMap")
-    private Map<String, String> testResourceMap;
+    private SeedDataExpanderService seedDataExpanderServiceInstance;
     
     @Before
     @Override
@@ -38,7 +31,7 @@ public class VocabularyDataServiceImplExtendedRegressionTest extends VocabularyD
             return;
         }
         
-        testAssistanceDao = new TestAssistanceDao(dataSource, new EmbeddedResourceManager(testResourceMap));
+        seedDataExpanderService = seedDataExpanderServiceInstance;
         initDbData();
         dbSetupDone = true;
     }
@@ -61,16 +54,7 @@ public class VocabularyDataServiceImplExtendedRegressionTest extends VocabularyD
                 int genSize = 50;
                 
                 for (int i = 0; i < genSize; i++) {
-                    testAssistanceDao.newVocabulariesByCopy();
-                    testAssistanceDao.linkVocabulariesToConcepts();
-                    testAssistanceDao.linkVocabulariesToConceptAttributes();
-                    testAssistanceDao.linkConceptsToAttributeValues();
-                    testAssistanceDao.createVocabularyVersions();
-                    testAssistanceDao.createRevisions();
-                    testAssistanceDao.linkRevisions();
-                    testAssistanceDao.linkRevisionsToVocabularyVersions();
-                    testAssistanceDao.linkRevisionsToConceptAttributeVersions();
-                    testAssistanceDao.clearWorkingState();
+                    seedDataExpanderService.expandSeedData();
                     
                     System.out.format("Gen %d out of %d complete.%n", i + 1, genSize);
                 }
