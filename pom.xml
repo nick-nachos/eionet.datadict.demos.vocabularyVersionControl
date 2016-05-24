@@ -15,6 +15,8 @@
         <env>unittest</env>
         <liquibase.version>3.4.2</liquibase.version>
         <spring.version>4.2.5.RELEASE</spring.version>
+        
+        <seed.data.exp.factor>0</seed.data.exp.factor>
     </properties>
 
     <dependencies>

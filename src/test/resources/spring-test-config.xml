@@ -86,4 +86,8 @@
         <constructor-arg name="resourceMappings" ref="testResourceMap" />
     </bean>
     
+    <bean id="seedDataExpanderConfiguration" class="eionet.datadict.testutil.services.data.SeedDataExpanderConfiguration">
+        <property name="expansionFactor" value="${seed.data.exp.factor}" />
+    </bean>
+    
 </beans>
