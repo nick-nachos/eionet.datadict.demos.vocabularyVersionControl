@@ -62,7 +62,7 @@ public class VocabularyDaoImplTest {
     
     private Vocabulary createExpectedVocabulary() {
         Vocabulary expected = new Vocabulary();
-        expected.setId(145L);
+        expected.setId(458L);
         expected.setIdentifier("eurostat.n_activ");
         expected.setLabel("Number of active persons");
         expected.setBaseUri("http://dd.eionet.europa.eu/vocabulary/eurostat/n_activ/");

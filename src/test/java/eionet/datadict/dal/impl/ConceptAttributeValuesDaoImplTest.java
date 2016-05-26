@@ -26,7 +26,7 @@ public class ConceptAttributeValuesDaoImplTest {
     @Test
     public void testGetConceptAttributeValues() {
         Vocabulary v = new Vocabulary();
-        v.setId(100L);
+        v.setId(105L); // cdda.designations
         List<VocabularyConceptAttributeValueSet> attributeValues = this.conceptAttributeValuesDao.getConceptAttributeValues(v);
         assertThat(attributeValues.size(), is(614));
         
@@ -52,7 +52,7 @@ public class ConceptAttributeValuesDaoImplTest {
     @Test
     public void testGetConceptLocalLinks() {
         Vocabulary v = new Vocabulary();
-        v.setId(100L);
+        v.setId(105L); // cdda.designations
         List<VocabularyConceptAttributeValueSet> attributeValues = this.conceptAttributeValuesDao.getConceptLocalLinks(v);
         assertThat(attributeValues.size(), is(0));
     }
@@ -60,7 +60,7 @@ public class ConceptAttributeValuesDaoImplTest {
     @Test
     public void testGetConceptInternalLinks() {
         Vocabulary v = new Vocabulary();
-        v.setId(100L);
+        v.setId(105L); // cdda.designations
         List<VocabularyConceptAttributeValueSet> attributeValues = this.conceptAttributeValuesDao.getConceptInternalLinks(v);
         assertThat(attributeValues.size(), is(614));
         
@@ -75,7 +75,7 @@ public class ConceptAttributeValuesDaoImplTest {
                 assertThat(value.getValueSet(), is(notNullValue()));
                 assertThat(value.getValueSet(), is(sameInstance(valueSet)));
                 
-                assertThat(value.getId(), is(notNullValue()));
+                assertThat(value.getId(), is(nullValue()));
                 assertThat(value.getRelatedConcept(), is(notNullValue()));
                 assertThat(value.getValue(), is(nullValue()));
             }
@@ -85,7 +85,7 @@ public class ConceptAttributeValuesDaoImplTest {
     @Test
     public void testGetConceptExternalLinks() {
         Vocabulary v = new Vocabulary();
-        v.setId(100L);
+        v.setId(105L); // cdda.designations
         List<VocabularyConceptAttributeValueSet> attributeValues = this.conceptAttributeValuesDao.getConceptExternalLinks(v);
         assertThat(attributeValues.size(), is(0));
     }

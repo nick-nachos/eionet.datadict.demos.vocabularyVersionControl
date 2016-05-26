@@ -1,29 +1,16 @@
 
 select
-    vc.fConceptId,
-    vca.fConceptAttributeId,
-    cav.Id,
-    cav.Language,
-    cav.Value
+    vcel.fConceptId,
+    vcel.fConceptAttributeId,
+    cel.Id,
+    cel.Value
 from
-    VocabularyConcepts vc
+    VocabularyConceptExternalLinks vcel
 inner join
-    VocabularyConceptAttributeValues vcav
+    ConceptExternalLink cel
 on
-    vc.Id = vcav.fVocabularyConceptId
-inner join
-    VocabularyConceptAttributes vca
-on
-    vca.Id = vcav.fVocabularyConceptAttributeId
-inner join
-    ConceptAttribute ca
-on
-    vca.fConceptAttributeId = ca.Id
-inner join
-    ConceptAttributeValue cav
-on
-    vcav.fConceptAttributeValueId = cav.Id
+    vcel.fConceptExternalLinkId = cel.Id
 where
-    vc.fVocabularyId = :vocabularyId and ca.DataType = :refType and cav.fRelatedVocabularyConceptId is null
+    vcel.fVocabularyId = :vocabularyId
 order by
-    vc.fConceptId, vca.fConceptAttributeId
+    vcel.fVocabularyId, vcel.fConceptId, vcel.fConceptAttributeId

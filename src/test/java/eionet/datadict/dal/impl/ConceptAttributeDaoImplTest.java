@@ -25,7 +25,7 @@ public class ConceptAttributeDaoImplTest {
     @Test
     public void testGetConceptAttributes() {
         Vocabulary v = new Vocabulary();
-        v.setId(100L);
+        v.setId(105L); // cdda.designations
         List<ConceptAttribute> attributes = conceptAttributeDao.getConceptAttributes(v);
         assertThat(attributes.size(), is(2));
         

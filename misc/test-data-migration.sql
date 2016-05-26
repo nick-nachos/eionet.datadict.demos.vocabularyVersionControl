@@ -1,7 +1,7 @@
 
 -- copy Vocabularies
 
-insert into VersionControlTest.Vocabulary (
+insert into VersionControlTest4.Vocabulary (
 	Identifier, 
 	Label, 
 	BaseUri, 
@@ -30,7 +30,7 @@ where
 
 -- copy concepts
 
-insert into VersionControlTest.Concept (
+insert into VersionControlTest4.Concept (
 	Identifier,
 	Notation,
 	Label,
@@ -56,7 +56,7 @@ where
 
 -- link vocabularies to concepts
 
-insert into VersionControlTest.VocabularyConcepts (
+insert into VersionControlTest4.VocabularyConcepts (
 	fVocabularyId,
 	fConceptId
 )
@@ -64,7 +64,7 @@ select
 	v.Id as fVocabularyId,
 	c.Id as fConceptId
 from
-	VersionControlTest.Vocabulary v
+	VersionControlTest4.Vocabulary v
 inner join
 	DataDict3.VOCABULARY ddv
 on
@@ -74,14 +74,14 @@ inner join
 on
 	ddv.VOCABULARY_ID = ddvc.VOCABULARY_ID
 inner join
-	VersionControlTest.Concept c
+	VersionControlTest4.Concept c
 on
 	ddvc.VOCABULARY_CONCEPT_ID = c.WorkItemId
 ;
 
 -- copy concept attributes
 
-insert into VersionControlTest.ConceptAttribute (
+insert into VersionControlTest4.ConceptAttribute (
 	Identifier,
 	DataType,
 	WorkItemId
@@ -123,7 +123,7 @@ on
 
 -- link vocabularies to concept attributes
 
-insert into VersionControlTest.VocabularyConceptAttributes (
+insert into VersionControlTest4.VocabularyConceptAttributes (
 	fVocabularyId,
 	fConceptAttributeId
 )
@@ -133,27 +133,25 @@ select
 from
 	DataDict3.VOCABULARY2ELEM v2e
 inner join
-	VersionControlTest.Vocabulary v
+	VersionControlTest4.Vocabulary v
 on
 	v2e.VOCABULARY_ID = v.WorkItemId
 inner join
-	VersionControlTest.ConceptAttribute ca
+	VersionControlTest4.ConceptAttribute ca
 on
 	v2e.DATAELEM_ID = ca.WorkItemId
 ;
 
 -- copy concept attribute values
 
-insert into VersionControlTest.ConceptAttributeValue (
+insert into VersionControlTest4.ConceptAttributeValue (
 	`Language`,
 	`Value`,
-	fRelatedVocabularyConceptId,
 	WorkItemId
 )
 select
 	ddvce.`LANGUAGE`,
 	ddvce.ELEMENT_VALUE,
-	vc.ID as fRelatedVocabularyConceptId,
 	ddvce.ID as WorkItemId
 from 
 	DataDict3.VOCABULARY_CONCEPT_ELEMENT ddvce
@@ -165,56 +163,161 @@ inner join
 	DataDict3.VOCABULARY ddv
 on
 	ddvc.VOCABULARY_ID = ddv.VOCABULARY_ID
-left join
-	VersionControlTest.Concept c
+inner join
+	VersionControlTest4.ConceptAttribute ca
 on
-	ddvce.RELATED_CONCEPT_ID = c.WorkItemId
-left join
-	VersionControlTest.VocabularyConcepts vc
-on 
-	c.Id = vc.fConceptId
+	ca.WorkItemId = ddvce.DATAELEM_ID
 where
-	ddv.WORKING_COPY = 0
+	ddv.WORKING_COPY = 0 and ca.DataType not in (7, 8)
+;
+
+insert into VersionControlTest4.ConceptExternalLink (
+	`Value`,
+	WorkItemId
+)
+select
+	ddvce.ELEMENT_VALUE,
+	ddvce.ID as WorkItemId
+from 
+	DataDict3.VOCABULARY_CONCEPT_ELEMENT ddvce
+inner join
+	DataDict3.VOCABULARY_CONCEPT ddvc
+on
+	ddvce.VOCABULARY_CONCEPT_ID = ddvc.VOCABULARY_CONCEPT_ID
+inner join
+	DataDict3.VOCABULARY ddv
+on
+	ddvc.VOCABULARY_ID = ddv.VOCABULARY_ID
+inner join
+	VersionControlTest4.ConceptAttribute ca
+on
+	ca.WorkItemId = ddvce.DATAELEM_ID
+where
+	ddv.WORKING_COPY = 0 and ddvce.RELATED_CONCEPT_ID is null and ca.DataType = 8
 ;
 
 -- link concepts / concept atributes / attribute values
 
-insert into VersionControlTest.VocabularyConceptAttributeValues (
-	fVocabularyConceptAttributeId,
-	fVocabularyConceptId,
+insert into VersionControlTest4.VocabularyConceptAttributeValues (
+	fVocabularyId,
+	fConceptId,
+	fConceptAttributeId,
 	fConceptAttributeValueId
 )
 select
-	vca.Id as fVocabularyConceptAttributeId,
-	vc.Id as fVocabularyConceptId,
+	vc.fVocabularyId,
+	vc.fConceptId,
+	vca.fConceptAttributeId,
 	cav.Id as fConceptAttributeValueId
 from
-	VersionControlTest.ConceptAttributeValue cav
+	VersionControlTest4.ConceptAttributeValue cav
 inner join	
 	DataDict3.VOCABULARY_CONCEPT_ELEMENT ddvce
 on
 	cav.WorkItemId = ddvce.ID
 inner join
-	VersionControlTest.Concept c
+	VersionControlTest4.Concept c
 on
 	c.WorkItemId = ddvce.VOCABULARY_CONCEPT_ID
 inner join
-	VersionControlTest.VocabularyConcepts vc
+	VersionControlTest4.VocabularyConcepts vc
 on
 	c.Id = vc.fConceptId
 inner join
-	VersionControlTest.VocabularyConceptAttributes vca
+	VersionControlTest4.VocabularyConceptAttributes vca
 on
 	vc.fVocabularyId = vca.fVocabularyId
 inner join
-	VersionControlTest.ConceptAttribute ca
+	VersionControlTest4.ConceptAttribute ca
 on
 	vca.fConceptAttributeId = ca.Id and ca.WorkItemId = ddvce.DATAELEM_ID
 ;
 
+insert into VersionControlTest4.VocabularyConceptExternalLinks (
+	fVocabularyId,
+	fConceptId,
+	fConceptAttributeId,
+	fConceptExternalLinkId
+)
+select
+	vc.fVocabularyId,
+	vc.fConceptId,
+	vca.fConceptAttributeId,
+	cel.Id as fConceptExternalLinkId
+from
+	VersionControlTest4.ConceptExternalLink cel
+inner join	
+	DataDict3.VOCABULARY_CONCEPT_ELEMENT ddvce
+on
+	cel.WorkItemId = ddvce.ID
+inner join
+	VersionControlTest4.Concept c
+on
+	c.WorkItemId = ddvce.VOCABULARY_CONCEPT_ID
+inner join
+	VersionControlTest4.VocabularyConcepts vc
+on
+	c.Id = vc.fConceptId
+inner join
+	VersionControlTest4.VocabularyConceptAttributes vca
+on
+	vc.fVocabularyId = vca.fVocabularyId
+inner join
+	VersionControlTest4.ConceptAttribute ca
+on
+	vca.fConceptAttributeId = ca.Id and ca.WorkItemId = ddvce.DATAELEM_ID
+;
+
+insert into VersionControlTest4.VocabularyConceptLinks (
+	fVocabularyId,
+	fConceptId,
+	fConceptAttributeId,
+	fRelatedVocabularyId,
+	fRelatedConceptId
+)
+select
+	v.Id as fVocabularyId,
+	c.Id as fConceptId,
+	ca.Id as fConceptAttributeId,
+	relvc.fVocabularyId as fRelatedVocabularyId,
+	relvc.fConceptId as fRelatedConceptId
+from 
+	DataDict3.VOCABULARY_CONCEPT_ELEMENT ddvce
+inner join
+	DataDict3.VOCABULARY_CONCEPT ddvc
+on
+	ddvce.VOCABULARY_CONCEPT_ID = ddvc.VOCABULARY_CONCEPT_ID
+inner join
+	DataDict3.VOCABULARY ddv
+on
+	ddvc.VOCABULARY_ID = ddv.VOCABULARY_ID
+inner join
+	VersionControlTest4.ConceptAttribute ca
+on
+	ca.WorkItemId = ddvce.DATAELEM_ID
+inner join
+	VersionControlTest4.Vocabulary v
+on
+	ddv.VOCABULARY_ID = v.WorkItemId
+inner join
+	VersionControlTest4.Concept c
+on
+	ddvc.VOCABULARY_CONCEPT_ID = c.WorkItemId
+inner join
+	Concept relc
+on
+	ddvce.RELATED_CONCEPT_ID = relc.WorkItemId
+inner join
+	VocabularyConcepts relvc
+on
+	relc.Id = relvc.fConceptId
+where
+	ddv.WORKING_COPY = 0 and ddvce.RELATED_CONCEPT_ID is not null and ca.DataType in (7, 8)
+;
+
 -- create vocabulary versions
 
-insert into VersionControlTest.VocabularyVersion (
+insert into VersionControlTest4.VocabularyVersion (
 	fEntityId,
 	UserName,
 	CommitDate
@@ -224,17 +327,17 @@ select
 	'testuser',
 	unix_timestamp('2016-05-12 09:30') * 1000
 from
-	VersionControlTest.Vocabulary v
+	VersionControlTest4.Vocabulary v
 ;
 
 update 
-	VersionControlTest.VocabularyVersion
+	VersionControlTest4.VocabularyVersion
 set 
 	fRootVersionId = Id
 ;
 
 -- create concept attribute versions
-insert into VersionControlTest.ConceptAttributeVersion (
+insert into VersionControlTest4.ConceptAttributeVersion (
 	fEntityId,
 	UserName,
 	CommitDate
@@ -244,18 +347,18 @@ select
 	'testuser',
 	unix_timestamp('2016-05-12 09:30') * 1000
 from
-	VersionControlTest.ConceptAttribute ca
+	VersionControlTest4.ConceptAttribute ca
 ;
 
 update 
-	VersionControlTest.ConceptAttributeVersion
+	VersionControlTest4.ConceptAttributeVersion
 set 
 	fRootVersionId = Id
 ;
 
 -- create root revision
 
-insert into VersionControlTest.Revision (
+insert into VersionControlTest4.Revision (
 	CreationDate,
 	UserName
 )
@@ -267,7 +370,7 @@ values (
 
 -- link root revision to entity versions
 
-insert into VersionControlTest.RevisionVocabularyVersions (
+insert into VersionControlTest4.RevisionVocabularyVersions (
 	fRevisionId,
 	fVocabularyVersionId
 )
@@ -275,16 +378,16 @@ select
 	r.Id as fRevisionId,
 	vver.Id as fVocabularyVersionId
 from
-	VersionControlTest.VocabularyVersion vver
+	VersionControlTest4.VocabularyVersion vver
 inner join (
 	select 
 		max(Id) as Id
 	from
-		VersionControlTest.Revision
+		VersionControlTest4.Revision
 ) r
 ;
 
-insert into VersionControlTest.RevisionConceptAttributeVersions (
+insert into VersionControlTest4.RevisionConceptAttributeVersions (
 	fRevisionId,
 	fConceptAttributeVersionId
 )
@@ -292,35 +395,41 @@ select
 	r.Id as fRevisionId,
 	caver.Id as fConceptAttributeVersionId
 from
-	VersionControlTest.ConceptAttributeVersion caver
+	VersionControlTest4.ConceptAttributeVersion caver
 inner join (
 	select 
 		max(Id) as Id
 	from
-		VersionControlTest.Revision
+		VersionControlTest4.Revision
 ) r
 ;
 
 update
-	VersionControlTest.Vocabulary
+	VersionControlTest4.Vocabulary
 set
 	WorkItemId = null
 ;
 
 update
-	VersionControlTest.Concept
+	VersionControlTest4.Concept
 set
 	WorkItemId = null
 ;
 
 update
-	VersionControlTest.ConceptAttribute
+	VersionControlTest4.ConceptAttribute
 set
 	WorkItemId = null
 ;
 
 update
-	VersionControlTest.ConceptAttributeValue
+	VersionControlTest4.ConceptAttributeValue
+set
+	WorkItemId = null
+;
+
+update
+	VersionControlTest4.ConceptExternalLink
 set
 	WorkItemId = null
 ;

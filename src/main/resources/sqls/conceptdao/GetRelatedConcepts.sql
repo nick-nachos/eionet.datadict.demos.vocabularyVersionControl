@@ -4,32 +4,17 @@ select
     relc.*
 from (
     select distinct
-        cav.fRelatedVocabularyConceptId
+        vcl.fRelatedVocabularyId,
+        vcl.fRelatedConceptId
     from
-        VocabularyConcepts vc
-    inner join
-        VocabularyConceptAttributeValues vcav
-    on
-        vc.Id = vcav.fVocabularyConceptId
-    inner join
-        VocabularyConceptAttributes vca
-    on
-        vca.Id = vcav.fVocabularyConceptAttributeId
-    inner join
-        ConceptAttribute ca
-    on
-        vca.fConceptAttributeId = ca.Id
-    inner join
-        ConceptAttributeValue cav
-    on
-        vcav.fConceptAttributeValueId = cav.Id
+        VocabularyConceptLinks vcl
     where
-        vc.fVocabularyId = :vocabularyId and ca.DataType = :refType
-) cav
+        vcl.fVocabularyId = :vocabularyId and vcl.fRelatedVocabularyId <> :vocabularyId
+) cal
 inner join
     VocabularyConcepts relvc
 on
-    relvc.fVocabularyId <> :vocabularyId and cav.fRelatedVocabularyConceptId = relvc.Id
+    relvc.fVocabularyId = cal.fRelatedVocabularyId and relvc.fConceptId = cal.fRelatedConceptId
 inner join
     Concept relc
 on

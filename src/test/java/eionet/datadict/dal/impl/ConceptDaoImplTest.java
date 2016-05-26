@@ -25,7 +25,7 @@ public class ConceptDaoImplTest {
     @Test
     public void testGetConcepts() {
         Vocabulary v = new Vocabulary();
-        v.setId(10L);
+        v.setId(9L); // aq.assessmenttype
         List<VocabularyConcept> concepts = conceptDao.getConcepts(v);
         
         assertThat(concepts.size(), is(4));

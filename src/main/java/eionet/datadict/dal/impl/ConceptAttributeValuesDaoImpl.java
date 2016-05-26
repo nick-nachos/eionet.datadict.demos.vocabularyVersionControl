@@ -71,7 +71,7 @@ public class ConceptAttributeValuesDaoImpl extends JdbcRepositoryBase implements
         parameters.put("vocabularyId", vocabulary.getId());
         parameters.put("refType", DataType.REFERENCE.getValue());
         
-        return this.getNamedParameterJdbcTemplate().query(sql, parameters, new TextValueSetExtractor());
+        return this.getNamedParameterJdbcTemplate().query(sql, parameters, new ExternalLinkValueSetExtractor());
     }
     
     protected static abstract class AttributeValueSetExtractorBase implements ResultSetExtractor<List<VocabularyConceptAttributeValueSet>> {
@@ -158,6 +158,16 @@ public class ConceptAttributeValuesDaoImpl extends JdbcRepositoryBase implements
         
     }
     
+    protected static class ExternalLinkValueSetExtractor extends AttributeValueSetExtractorBase {
+
+        @Override
+        protected void setProperties(VocabularyConceptAttributeValue value, ResultSet rs) throws SQLException, DataAccessException {
+            value.setId(rs.getLong("Id"));
+            value.setValue(rs.getString("Value"));
+        }
+        
+    }
+    
     protected static class LinkValueSetExtractor extends AttributeValueSetExtractorBase {
 
         private final Map<Long, Vocabulary> vocabularyCache;
@@ -170,8 +180,7 @@ public class ConceptAttributeValuesDaoImpl extends JdbcRepositoryBase implements
         
         @Override
         protected void setProperties(VocabularyConceptAttributeValue value, ResultSet rs) throws SQLException, DataAccessException {
-            value.setId(rs.getLong("Id"));
-            value.setLanguage(rs.getString("Language"));
+            // value.setId(rs.getLong("Id"));
             Long relatedConceptId = rs.getLong("fRelatedConceptId");
             
             if (conceptCache.containsKey(relatedConceptId)) {
