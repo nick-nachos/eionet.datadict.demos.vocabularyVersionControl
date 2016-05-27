@@ -28,6 +28,12 @@
                     key="eionet.datadict.dal.impl.util.TestAssistanceDao.linkConceptsToAttributeValues" 
                     value="sqls/testassistancedao/LinkConceptsToAttributeValues.sql" />
                 <entry 
+                    key="eionet.datadict.dal.impl.util.TestAssistanceDao.linkConceptsToExternalConcepts" 
+                    value="sqls/testassistancedao/LinkConceptsToExternalConcepts.sql" />
+                <entry 
+                    key="eionet.datadict.dal.impl.util.TestAssistanceDao.linkConceptsToInternalConcepts" 
+                    value="sqls/testassistancedao/LinkConceptsToInternalConcepts.sql" />
+                <entry 
                     key="eionet.datadict.dal.impl.util.TestAssistanceDao.createVocabularyVersions" 
                     value="sqls/testassistancedao/CreateVocabularyVersions.sql" />
                 <entry 

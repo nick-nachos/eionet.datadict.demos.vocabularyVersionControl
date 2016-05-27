@@ -47,6 +47,16 @@ public class TestAssistanceDao extends JdbcRepositoryBase {
         this.getJdbcTemplate().update(sql);
     }
     
+    public void linkConceptsToExternalConcepts() {
+        String sql = this.resourceManager.getText("eionet.datadict.dal.impl.util.TestAssistanceDao.linkConceptsToExternalConcepts");
+        this.getJdbcTemplate().update(sql);
+    }
+    
+    public void linkConceptsToInternalConcepts() {
+        String sql = this.resourceManager.getText("eionet.datadict.dal.impl.util.TestAssistanceDao.linkConceptsToInternalConcepts");
+        this.getJdbcTemplate().update(sql);
+    }
+    
     public void createVocabularyVersions() {
         String sql = this.resourceManager.getText("eionet.datadict.dal.impl.util.TestAssistanceDao.createVocabularyVersions");
         this.getJdbcTemplate().update(sql);

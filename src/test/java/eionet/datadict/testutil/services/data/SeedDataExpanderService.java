@@ -19,6 +19,8 @@ public class SeedDataExpanderService {
         this.testAssistanceDao.linkVocabulariesToConcepts();
         this.testAssistanceDao.linkVocabulariesToConceptAttributes();
         this.testAssistanceDao.linkConceptsToAttributeValues();
+        this.testAssistanceDao.linkConceptsToExternalConcepts();
+        this.testAssistanceDao.linkConceptsToInternalConcepts();
         this.testAssistanceDao.createVocabularyVersions();
         this.testAssistanceDao.createRevisions();
         this.testAssistanceDao.linkRevisions();
